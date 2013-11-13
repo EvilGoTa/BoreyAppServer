@@ -57,7 +57,7 @@ public class BankDBAccess extends DBAccess{
             PreparedStatement prep = connection.prepareStatement(""
                     + "UPDATE BANK SET bank_name='?', bank_address='?', "
                     + "bank_location='?', bank_license_num=? "
-                    + "WHERE goods_id=?");
+                    + "WHERE bank_id=?");
             prep.setInt(5, bank.getId());
             prep.setString(1, bank.getName());
             prep.setString(2, bank.getAddress());
