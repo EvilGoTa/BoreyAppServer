@@ -4,6 +4,7 @@
  */
 package appserver;
 
+import DBAccess.GoodsDBAccess;
 import java.sql.*;
 
 /**
@@ -32,6 +33,8 @@ public class AppServer {
                 } catch (Exception ignore) {
                 }
             }
+            GoodsDBAccess g = new GoodsDBAccess();
+            System.out.println("count: "+g.getGods().size()); 
             st.close();
             con.close();
         } catch (SQLException e) {

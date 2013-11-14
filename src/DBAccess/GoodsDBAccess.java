@@ -24,10 +24,10 @@ public class GoodsDBAccess extends DBAccess{
             Statement statement = connection.createStatement();
             ResultSet set = statement.executeQuery("SELECT * FROM goods");
             while(set.next()){
-                goodsList.add(new Goods(set.getInt("id"), set.getString("name"), 
-                        set.getInt("class_num"), set.getString("tara"), 
-                        set.getString("firm_name"), set.getInt("count"), 
-                        set.getInt("price")));
+                goodsList.add(new Goods(set.getInt("goods_id"), set.getString("goods_name"), 
+                        set.getInt("goods_class_num"), set.getString("goods_tara"), 
+                        set.getString("goods_firm_name"), set.getInt("goods_count"), 
+                        set.getInt("goods_price")));
             }
         } catch (Exception e) {
             System.out.println("GoodsDBA prblem: "+e.toString());
