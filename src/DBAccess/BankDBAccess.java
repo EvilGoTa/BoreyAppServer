@@ -27,8 +27,10 @@ public class BankDBAccess extends DBAccess{
                         set.getString("bank_address"), set.getString("bank_location"), 
                         set.getInt("bank_license_num")));
             }
+            connection.close();
         } catch (Exception e) {
             System.out.println("BankDBA prblem: "+e.toString());
+            
         }
         return list;
     }
@@ -39,13 +41,14 @@ public class BankDBAccess extends DBAccess{
             PreparedStatement prep = connection.prepareStatement(""
                     + "INSERT INTO BANK (bank_id, bank_name, bank_address, "
                     + "bank_location, bank_license_num) "
-                    + "VALUES (?, '?', '?', '?', ?)");
+                    + "VALUES (?, ?, ?, ?, ?)");
             prep.setInt(1, bank.getId());
             prep.setString(2, bank.getName());
             prep.setString(3, bank.getAddress());
             prep.setString(4, bank.getLocation());
             prep.setInt(5, bank.getLicense_num());
             prep.executeUpdate();
+            connection.close();
         } catch (Exception e) {
             System.out.println("BankDBA prblem: "+e.toString());
         }
@@ -55,8 +58,8 @@ public class BankDBAccess extends DBAccess{
         try {
             Connection connection = getConnect();
             PreparedStatement prep = connection.prepareStatement(""
-                    + "UPDATE BANK SET bank_name='?', bank_address='?', "
-                    + "bank_location='?', bank_license_num=? "
+                    + "UPDATE BANK SET bank_name=?, bank_address=?, "
+                    + "bank_location=?, bank_license_num=? "
                     + "WHERE bank_id=?");
             prep.setInt(5, bank.getId());
             prep.setString(1, bank.getName());
@@ -64,6 +67,7 @@ public class BankDBAccess extends DBAccess{
             prep.setString(3, bank.getLocation());
             prep.setInt(4, bank.getLicense_num());
             prep.executeUpdate();
+            connection.close();
         } catch (Exception e) {
             System.out.println("BankDBA prblem: "+e.toString());
         }
@@ -76,6 +80,7 @@ public class BankDBAccess extends DBAccess{
                     + "DELETE FROM BANK WHERE bank_id=?");
             prep.setInt(1, bank.getId());
             prep.executeUpdate();
+            connection.close();
         } catch (Exception e) {
             System.out.println("BankDBA prblem: "+e.toString());
         }

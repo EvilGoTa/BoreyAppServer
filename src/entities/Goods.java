@@ -4,11 +4,13 @@
  */
 package entities;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Asus
  */
-public class Goods {
+public class Goods implements Serializable{
     Integer id;
     String name;
     Integer class_num;

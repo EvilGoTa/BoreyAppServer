@@ -26,6 +26,7 @@ public class GoodsInInvDBAccess extends DBAccess{
                 list.add(new GoodsInInv(set.getInt("gin_goods_id"), set.getInt("gin_inv_id"), 
                         set.getInt("gin_goods_count"), set.getInt("valid")));
             }
+            connection.close();
         } catch (Exception e) {
             System.out.println(this.getClass().toString() + " problem: "+e.toString());
         }
@@ -42,9 +43,9 @@ public class GoodsInInvDBAccess extends DBAccess{
             prep.setInt(1, gin.getId());
             prep.setInt(2, gin.getInv_id());
             prep.setInt(3, gin.getGoods_count());
-            prep.setInt(4, gin.getValid());            
-            
+            prep.setInt(4, gin.getValid());                        
             prep.executeUpdate();
+            connection.close();
         } catch (Exception e) {
             System.out.println(this.getClass().toString() + " problem: "+e.toString());
         }
@@ -62,6 +63,7 @@ public class GoodsInInvDBAccess extends DBAccess{
             prep.setInt(2, gin.getGoods_count());
             prep.setInt(3, gin.getValid());            
             prep.executeUpdate();
+            connection.close();
         } catch (Exception e) {
             System.out.println(this.getClass().toString() + " problem: "+e.toString());
         }
@@ -75,6 +77,7 @@ public class GoodsInInvDBAccess extends DBAccess{
             prep.setInt(1, gin.getId());
             prep.setInt(2, gin.getInv_id());
             prep.executeUpdate();
+            connection.close();
         } catch (Exception e) {
             System.out.println(this.getClass().toString() + " problem: "+e.toString());
         }

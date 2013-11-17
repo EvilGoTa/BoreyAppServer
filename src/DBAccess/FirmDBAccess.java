@@ -27,6 +27,7 @@ public class FirmDBAccess extends DBAccess{
                         set.getString("firm_country"), set.getString("firm_Address"), 
                         set.getInt("firm_license"), set.getString("firm_type")));
             }
+            connection.close();
         } catch (Exception e) {
             System.out.println(this.getClass().toString() + " problem: "+e.toString());
         }
@@ -39,15 +40,15 @@ public class FirmDBAccess extends DBAccess{
             PreparedStatement prep = connection.prepareStatement(""
                     + "INSERT INTO FIRM (firm_id, firm_name, firm_country, "
                     + "firm_address, firm_type) "
-                    + "VALUES (?, '?', '?', '?', ?, '?')");
+                    + "VALUES (?, ?, ?, ?, ?, ?)");
             prep.setInt(1, firm.getId());
             prep.setString(2, firm.getName());
             prep.setString(3, firm.getCountry());
             prep.setString(4, firm.getAddress());
             prep.setInt(5, firm.getLicense());
-            prep.setString(6, firm.getType());
-            
+            prep.setString(6, firm.getType());            
             prep.executeUpdate();
+            connection.close();
         } catch (Exception e) {
             System.out.println(this.getClass().toString() + " problem: "+e.toString());
         }
@@ -57,8 +58,8 @@ public class FirmDBAccess extends DBAccess{
         try {
             Connection connection = getConnect();
             PreparedStatement prep = connection.prepareStatement(""
-                    + "UPDATE FIRM SET firm_name='?', firm_country='?', "
-                    + "fitm_address='?', firm_license=?, firm_type='?' "
+                    + "UPDATE FIRM SET firm_name=?, firm_country=?, "
+                    + "fitm_address=?, firm_license=?, firm_type=? "
                     + "WHERE firm_id=?");
             prep.setInt(6, firm.getId());
             prep.setString(1, firm.getName());
@@ -67,6 +68,7 @@ public class FirmDBAccess extends DBAccess{
             prep.setInt(4, firm.getLicense());
             prep.setString(5, firm.getType());
             prep.executeUpdate();
+            connection.close();
         } catch (Exception e) {
             System.out.println(this.getClass().toString() + " problem: "+e.toString());
         }
@@ -79,6 +81,7 @@ public class FirmDBAccess extends DBAccess{
                     + "DELETE FROM FIRM WHERE firm_id=?");
             prep.setInt(1, firm.getId());
             prep.executeUpdate();
+            connection.close();
         } catch (Exception e) {
             System.out.println(this.getClass().toString() + " problem: "+e.toString());
         }

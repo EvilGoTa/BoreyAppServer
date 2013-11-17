@@ -13,8 +13,15 @@ public class Account {
     Integer firm_id;
     Integer currency_id;
     Integer bank_id;
-    String account_type;
+    String account_type = "";
+    String firmName = "";
+    String currencyName = "";
+    String bankName = "";
 
+    public Account(Integer id) {
+        this.id = id;
+    }
+    
     public Account(Integer id, Integer firm_id, Integer currency_id, Integer bank_id, String account_type) {
         this.id = id;
         this.firm_id = firm_id;
@@ -23,6 +30,17 @@ public class Account {
         this.account_type = account_type;
     }
 
+    public Account(Integer id, Integer firm_id, Integer currency_id, Integer bank_id, String account_type, String firmName, String currencyName, String bankName) {
+        this.id = id;
+        this.firm_id = firm_id;
+        this.currency_id = currency_id;
+        this.bank_id = bank_id;
+        this.account_type = account_type;
+        this.firmName = firmName;
+        this.currencyName = currencyName;
+        this.bankName = bankName;
+    }
+    
     public void setId(Integer id) {
         this.id = id;
     }
@@ -43,6 +61,20 @@ public class Account {
         this.account_type = account_type;
     }
 
+    public void setFirmName(String firmName) {
+        this.firmName = firmName;
+    }
+
+    public void setCurrencyName(String currencyName) {
+        this.currencyName = currencyName;
+    }
+
+    public void setBankName(String bankName) {
+        this.bankName = bankName;
+    }
+
+    
+    
     public Integer getId() {
         return id;
     }
@@ -61,6 +93,18 @@ public class Account {
 
     public String getAccount_type() {
         return account_type;
+    }
+
+    public String getFirmName() {
+        return firmName;
+    }
+
+    public String getCurrencyName() {
+        return currencyName;
+    }
+
+    public String getBankName() {
+        return bankName;
     }
     
     

@@ -21,11 +21,18 @@ public class ExRateDBAccess extends DBAccess{
         try {
             Connection connection = getConnect();
             Statement statement = connection.createStatement();
-            ResultSet set = statement.executeQuery("SELECT * FROM Exchange_Rate");
+            String query = "select distinct ex_id, ex_currency_id_1, cur1.curr_name name1, "
+                    + "ex_currency_id_2, cur2.curr_name name2, ex_date, ex_ratio "
+                    + "from exchange_rate " 
+                    + "left join currency cur1 on cur1.curr_id = exchange_rate.ex_currency_id_1 "
+                    + "left join currency cur2 on cur2.curr_id = exchange_rate.ex_currency_id_2";
+            ResultSet set = statement.executeQuery(query);
             while(set.next()){
                 list.add(new ExchangeRate(set.getInt("ex_id"), set.getInt("ex_currency_id_1"), 
-                        set.getInt("ex_currency_id_2"), set.getString("ex_date"), set.getFloat("ex_ratio")));
+                        set.getInt("ex_currency_id_2"), set.getString("ex_date"), set.getFloat("ex_ratio"),
+                        set.getString("name1"), set.getString("name2")));
             }
+            connection.close();
         } catch (Exception e) {
             System.out.println(this.getClass().toString() + " prblem: "+e.toString());
         }
@@ -38,14 +45,14 @@ public class ExRateDBAccess extends DBAccess{
             PreparedStatement prep = connection.prepareStatement(""
                     + "INSERT INTO Exchange_Rate (ex_id, ex_currency_id_1, ex_currency_id_2, "
                     + "ex_date, ex_ratio) "
-                    + "VALUES (?, ?, ?, '?', ?)");
+                    + "VALUES (?, ?, ?, ?, ?)");
             prep.setInt(1, exrate.getId());
             prep.setInt(2, exrate.getCurrency_id_1());
             prep.setInt(3, exrate.getCurrency_id_2());
             prep.setString(4, exrate.getDate());
-            prep.setFloat(5, exrate.getRatio());
-            
+            prep.setFloat(5, exrate.getRatio());         
             prep.executeUpdate();
+            connection.close();
         } catch (Exception e) {
             System.out.println(this.getClass().toString() + " prblem: "+e.toString());
         }
@@ -56,7 +63,7 @@ public class ExRateDBAccess extends DBAccess{
             Connection connection = getConnect();
             PreparedStatement prep = connection.prepareStatement(""
                     + "UPDATE Exchange_Rate SET ex_currency_id_1=?, ex_currency_id_2=?, "
-                    + "ex_date='?', ex_ratio=? "
+                    + "ex_date=?, ex_ratio=? "
                     + "WHERE ex_id=?");
             prep.setInt(5, exrate.getId());
             prep.setInt(1, exrate.getCurrency_id_1());
@@ -64,6 +71,7 @@ public class ExRateDBAccess extends DBAccess{
             prep.setString(3, exrate.getDate());
             prep.setFloat(4, exrate.getRatio());
             prep.executeUpdate();
+            connection.close();
         } catch (Exception e) {
             System.out.println(this.getClass().toString() + " prblem: "+e.toString());
         }
@@ -76,6 +84,7 @@ public class ExRateDBAccess extends DBAccess{
                     + "DELETE FROM Exchange_Rate WHERE ex_id=?");
             prep.setInt(1, exrate.getId());
             prep.executeUpdate();
+            connection.close();
         } catch (Exception e) {
             System.out.println(this.getClass().toString() + " prblem: "+e.toString());
         }

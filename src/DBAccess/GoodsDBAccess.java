@@ -29,6 +29,7 @@ public class GoodsDBAccess extends DBAccess{
                         set.getString("goods_firm_name"), set.getInt("goods_count"), 
                         set.getInt("goods_price")));
             }
+            connection.close();
         } catch (Exception e) {
             System.out.println("GoodsDBA prblem: "+e.toString());
         }
@@ -41,7 +42,7 @@ public class GoodsDBAccess extends DBAccess{
             PreparedStatement prep = connection.prepareStatement(""
                     + "INSERT INTO GOODS (goods_id, goods_name, goods_class_num, "
                     + "goods_tara, goods_firm_name, goods_count, goods_price) "
-                    + "VALUES (?, '?', ?, '?', '?', ?, ?)");
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?)");
             prep.setInt(1, goods.getId());
             prep.setString(2, goods.getName());
             prep.setInt(3, goods.getClass_num());
@@ -50,6 +51,7 @@ public class GoodsDBAccess extends DBAccess{
             prep.setInt(6, goods.getCount());
             prep.setInt(7, goods.getCount());
             prep.executeUpdate();
+            connection.close();
         } catch (Exception e) {
             System.out.println("GoodsDBA prblem: "+e.toString());
         }
@@ -71,6 +73,7 @@ public class GoodsDBAccess extends DBAccess{
             prep.setInt(5, goods.getCount());
             prep.setInt(6, goods.getCount());
             prep.executeUpdate();
+            connection.close();
         } catch (Exception e) {
             System.out.println("GoodsDBA prblem: "+e.toString());
         }
@@ -83,6 +86,7 @@ public class GoodsDBAccess extends DBAccess{
                     + "DELETE FROM GOODS WHERE goods_id=?");
             prep.setInt(1, goods.getId());
             prep.executeUpdate();
+            connection.close();
         } catch (Exception e) {
             System.out.println("GoodsDBA prblem: "+e.toString());
         }

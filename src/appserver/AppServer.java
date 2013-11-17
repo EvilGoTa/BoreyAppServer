@@ -5,7 +5,13 @@
 package appserver;
 
 import DBAccess.GoodsDBAccess;
+import java.rmi.Naming;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
+import remote.RemoteGoodsKeeper;
+import roles.GoodsKeeper;
 
 /**
  *
@@ -18,7 +24,7 @@ public class AppServer {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        Connection con = null;
+        /*Connection con = null;
         try {
             con = oraConnect("gota", "gota");
             Statement st = con.createStatement();
@@ -32,15 +38,27 @@ public class AppServer {
                     rs.close();
                 } catch (Exception ignore) {
                 }
-            }
-            GoodsDBAccess g = new GoodsDBAccess();
-            System.out.println("count: "+g.getGods().size()); 
+            } 
             st.close();
             con.close();
         } catch (SQLException e) {
             System.out.println("connection fail: " + e.toString());
+        }*/
+        
+        /* rmi test */
+        
+        try {
+            String name = "GoodsKeeper";
+            GoodsKeeper gk = new GoodsKeeper();
+            Naming.rebind(name, gk); 
+            System.out.println("GoodsKeeper bound");
+        } catch (Exception e) {
+            System.out.println("error: "+e.toString());
+            //e.printStackTrace();
         }
- 
+        
+        /* --- */
+        
     }
     
     public static Connection oraConnect(String username, String pass) throws SQLException{

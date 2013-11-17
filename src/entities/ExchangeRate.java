@@ -14,6 +14,8 @@ public class ExchangeRate {
     Integer currency_id_2;
     String date;
     Float ratio;
+    String currencyName1;
+    String currencyName2;
 
     public ExchangeRate(Integer id, Integer currency_id_1, Integer currency_id_2, String date, Float ratio) {
         this.id = id;
@@ -23,6 +25,24 @@ public class ExchangeRate {
         this.ratio = ratio;
     }
 
+    public ExchangeRate(Integer id, Integer currency_id_1, Integer currency_id_2, String date, Float ratio, String currencyName1, String currencyName2) {
+        this.id = id;
+        this.currency_id_1 = currency_id_1;
+        this.currency_id_2 = currency_id_2;
+        this.date = date;
+        this.ratio = ratio;
+        this.currencyName1 = currencyName1;
+        this.currencyName2 = currencyName2;
+    }
+
+    public void setCurrencyName1(String currencyName1) {
+        this.currencyName1 = currencyName1;
+    }
+
+    public void setCurrencyName2(String currencyName2) {
+        this.currencyName2 = currencyName2;
+    }
+    
     public void setId(Integer id) {
         this.id = id;
     }
@@ -61,6 +81,14 @@ public class ExchangeRate {
 
     public Float getRatio() {
         return ratio;
+    }
+
+    public String getCurrencyName1() {
+        return currencyName1;
+    }
+
+    public String getCurrencyName2() {
+        return currencyName2;
     }
     
     

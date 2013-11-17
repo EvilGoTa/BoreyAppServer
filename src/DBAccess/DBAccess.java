@@ -12,6 +12,12 @@ import java.sql.*;
  */
 public class DBAccess {
     public Connection getConnect() throws SQLException {
+        try {
+            Class.forName("oracle.jdbc.OracleDriver");
+            //Class.forName("oracle.jdbc.driver.OracleDriver");
+        } catch (Exception e) {
+            System.out.println("magic words didnt help: "+e.toString());
+        }
         Connection con = DriverManager.getConnection("jdbc:oracle:thin:@//localhost:1521/orcl", "gota", "gota");
         return con; 
     }
