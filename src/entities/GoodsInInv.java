@@ -4,15 +4,18 @@
  */
 package entities;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Asus
  */
-public class GoodsInInv {
+public class GoodsInInv implements Serializable{
     Integer id;
     Integer inv_id;
     Integer goods_count;
     Integer valid;
+    String goodsName;
 
     public GoodsInInv(Integer id, Integer inv_id, Integer goods_count, Integer valid) {
         this.id = id;
@@ -21,6 +24,14 @@ public class GoodsInInv {
         this.valid = valid;
     }
 
+    public GoodsInInv(Integer id, Integer inv_id, Integer goods_count, Integer valid, String goodsName) {
+        this.id = id;
+        this.inv_id = inv_id;
+        this.goods_count = goods_count;
+        this.valid = valid;
+        this.goodsName = goodsName;
+    }
+    
     public void setId(Integer id) {
         this.id = id;
     }

@@ -33,6 +33,23 @@ public class GoodsInInvDBAccess extends DBAccess{
         return list;
     }
     
+    public ArrayList<GoodsInInv> getGIN(int invoice) {
+        ArrayList<GoodsInInv> list = new ArrayList<>();
+        try {
+            Connection connection = getConnect();
+            Statement statement = connection.createStatement();
+            ResultSet set = statement.executeQuery("SELECT * FROM GOODS_IN_INV WHERE gin_inv_id = "+invoice);
+            while(set.next()){
+                list.add(new GoodsInInv(set.getInt("gin_goods_id"), set.getInt("gin_inv_id"), 
+                        set.getInt("gin_goods_count"), set.getInt("valid")));
+            }
+            connection.close();
+        } catch (Exception e) {
+            System.out.println(this.getClass().toString() + " problem: "+e.toString());
+        }
+        return list;
+    }
+    
     public void addGIN(GoodsInInv gin) {
         try {
             Connection connection = getConnect();

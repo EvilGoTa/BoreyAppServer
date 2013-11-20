@@ -4,11 +4,13 @@
  */
 package entities;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Asus
  */
-public class ExchangeRate {
+public class ExchangeRate implements Serializable{
     Integer id;
     Integer currency_id_1;
     Integer currency_id_2;

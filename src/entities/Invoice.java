@@ -4,11 +4,13 @@
  */
 package entities;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Asus
  */
-public class Invoice {
+public class Invoice implements Serializable{
     Integer id;
     String date;
     Integer firm_id;

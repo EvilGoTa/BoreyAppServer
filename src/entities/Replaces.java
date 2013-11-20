@@ -4,11 +4,13 @@
  */
 package entities;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Asus
  */
-public class Replaces {
+public class Replaces implements Serializable{
     Integer good_id;
     Integer replace_good_id;
     String name1, name2;
