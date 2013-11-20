@@ -29,7 +29,10 @@ public class Goods implements Serializable{
         this.price = price;
     }
     
-    
+    @Override
+    public String toString() {
+        return this.name;
+    }
     
     public void setId(Integer id) {
         this.id = id;

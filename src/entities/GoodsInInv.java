@@ -31,6 +31,10 @@ public class GoodsInInv implements Serializable{
         this.valid = valid;
         this.goodsName = goodsName;
     }
+
+    public void setGoodsName(String goodsName) {
+        this.goodsName = goodsName;
+    }
     
     public void setId(Integer id) {
         this.id = id;
@@ -62,6 +66,10 @@ public class GoodsInInv implements Serializable{
 
     public Integer getValid() {
         return valid;
+    }
+
+    public String getGoodsName() {
+        return goodsName;
     }
     
     

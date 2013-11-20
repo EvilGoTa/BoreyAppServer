@@ -27,6 +27,11 @@ public class Firm implements Serializable{
         this.type = type;
     }
 
+    @Override
+    public String toString() {
+        return this.name;
+    }
+    
     public void setId(Integer id) {
         this.id = id;
     }

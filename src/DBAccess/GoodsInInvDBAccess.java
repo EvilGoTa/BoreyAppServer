@@ -38,10 +38,11 @@ public class GoodsInInvDBAccess extends DBAccess{
         try {
             Connection connection = getConnect();
             Statement statement = connection.createStatement();
-            ResultSet set = statement.executeQuery("SELECT * FROM GOODS_IN_INV WHERE gin_inv_id = "+invoice);
+            String query = "select gin_inv_id, gin_goods_id, goods_name, gin_goods_count, valid from goods_in_inv, goods where gin_goods_id = goods_id AND gin_inv_id = "+invoice;
+            ResultSet set = statement.executeQuery(query);
             while(set.next()){
                 list.add(new GoodsInInv(set.getInt("gin_goods_id"), set.getInt("gin_inv_id"), 
-                        set.getInt("gin_goods_count"), set.getInt("valid")));
+                        set.getInt("gin_goods_count"), set.getInt("valid"), set.getString("goods_name")));
             }
             connection.close();
         } catch (Exception e) {
@@ -54,13 +55,11 @@ public class GoodsInInvDBAccess extends DBAccess{
         try {
             Connection connection = getConnect();
             PreparedStatement prep = connection.prepareStatement(""
-                    + "INSERT INTO GOODS_IN_INV (gin_goods_id, gin_inv_id, gin_goods_count, "
-                    + "valid) "
-                    + "VALUES (?, ?, ?, ?)");
+                    + "INSERT INTO GOODS_IN_INV (gin_goods_id, gin_inv_id, gin_goods_count)"
+                    + "VALUES (?, ?, ?)");
             prep.setInt(1, gin.getId());
             prep.setInt(2, gin.getInv_id());
-            prep.setInt(3, gin.getGoods_count());
-            prep.setInt(4, gin.getValid());                        
+            prep.setInt(3, gin.getGoods_count());                        
             prep.executeUpdate();
             connection.close();
         } catch (Exception e) {
@@ -73,12 +72,11 @@ public class GoodsInInvDBAccess extends DBAccess{
             Connection connection = getConnect();
             PreparedStatement prep = connection.prepareStatement(""
                     + "UPDATE GOODS_IN_INV SET gin_inv_id=?, gin_goods_count=?, "
-                    + "fitm_address=?, valid=? "
+                    + "fitm_address=? "
                     + "WHERE gin_goods_id=?");
             prep.setInt(4, gin.getId());
             prep.setInt(1, gin.getInv_id());
-            prep.setInt(2, gin.getGoods_count());
-            prep.setInt(3, gin.getValid());            
+            prep.setInt(2, gin.getGoods_count());            
             prep.executeUpdate();
             connection.close();
         } catch (Exception e) {
