@@ -4,11 +4,13 @@
  */
 package entities;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Asus
  */
-public class Goods {
+public class Goods implements Serializable{
     Integer id;
     String name;
     Integer class_num;
@@ -27,7 +29,10 @@ public class Goods {
         this.price = price;
     }
     
-    
+    @Override
+    public String toString() {
+        return this.name;
+    }
     
     public void setId(Integer id) {
         this.id = id;

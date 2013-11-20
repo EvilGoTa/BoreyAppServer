@@ -4,11 +4,13 @@
  */
 package entities;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Asus
  */
-public class Firm {
+public class Firm implements Serializable{
     Integer id;
     String name;
     String country;
@@ -25,6 +27,11 @@ public class Firm {
         this.type = type;
     }
 
+    @Override
+    public String toString() {
+        return this.name;
+    }
+    
     public void setId(Integer id) {
         this.id = id;
     }
