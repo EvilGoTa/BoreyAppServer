@@ -4,14 +4,17 @@
  */
 package entities;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Asus
  */
-public class Invoice {
+public class Invoice implements Serializable{
     Integer id;
     String date;
     Integer firm_id;
+    String firmName;
 
     public Invoice(Integer id, String date, Integer firm_id) {
         this.id = id;
@@ -19,6 +22,17 @@ public class Invoice {
         this.firm_id = firm_id;
     }
 
+    public Invoice(Integer id, String date, Integer firm_id, String firmName) {
+        this.id = id;
+        this.date = date;
+        this.firm_id = firm_id;
+        this.firmName = firmName;
+    }
+
+    public void setFirmName(String firmName) {
+        this.firmName = firmName;
+    }
+    
     public void setId(Integer id) {
         this.id = id;
     }
@@ -41,6 +55,10 @@ public class Invoice {
 
     public Integer getFirm_id() {
         return firm_id;
+    }
+
+    public String getFirmName() {
+        return firmName;
     }
     
     

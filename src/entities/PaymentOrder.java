@@ -4,11 +4,13 @@
  */
 package entities;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Asus
  */
-public class PaymentOrder {
+public class PaymentOrder implements Serializable{
     Integer department_id;
     Integer account_id;
     String date;

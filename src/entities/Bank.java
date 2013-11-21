@@ -4,11 +4,13 @@
  */
 package entities;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Asus
  */
-public class Bank {
+public class Bank implements Serializable{
     Integer id;
     String name;
     String address;
@@ -41,6 +43,26 @@ public class Bank {
 
     public void setLicense_num(Integer license_num) {
         this.license_num = license_num;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public Integer getLicense_num() {
+        return license_num;
     }
     
     
