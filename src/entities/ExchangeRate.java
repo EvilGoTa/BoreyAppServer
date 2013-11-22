@@ -18,7 +18,9 @@ public class ExchangeRate implements Serializable{
     Float ratio;
     String currencyName1;
     String currencyName2;
-
+    
+    public ExchangeRate(){}
+    
     public ExchangeRate(Integer id, Integer currency_id_1, Integer currency_id_2, String date, Float ratio) {
         this.id = id;
         this.currency_id_1 = currency_id_1;

@@ -1,9 +1,6 @@
 package client_stuff;
 
-import Forms.Models.CurrencyTableModel;
 import Client.Client;
-import Forms.Models.BankTableModel;
-import Forms.Models.ExRateTableModel;
 import entities.Bank;
 import entities.Currency;
 import entities.ExchangeRate;
@@ -11,10 +8,11 @@ import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import models.BankTableModel;
+import models.CurrencyTableModel;
+import models.ExRateTableModel;
 
 public class BookKeeperForm extends javax.swing.JFrame {
     Client client = null;

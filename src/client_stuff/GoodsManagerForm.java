@@ -121,7 +121,6 @@ public class GoodsManagerForm extends javax.swing.JFrame {
             }
         });
 
-        jTableGoods.setModel(new Forms.Models.GoodsTableModel(goods));
         jTableGoods.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_LAST_COLUMN);
         jTableGoods.setAutoscrolls(false);
         jTableGoods.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
