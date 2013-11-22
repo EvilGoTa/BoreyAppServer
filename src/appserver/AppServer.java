@@ -38,7 +38,7 @@ public class AppServer {
 //        } catch (SQLException e) {
 //            System.out.println("connection fail: " + e.toString());
 //        }
-// 
+ 
     }
     
     public static Connection oraConnect(String username, String pass) throws SQLException{

@@ -19,6 +19,7 @@ public class Server extends UnicastRemoteObject implements ServerIntf{
     public Server() throws RemoteException{     
     }
 
+    @Override
     public ArrayList<Goods> refreshGoods() throws RemoteException {
         GoodsDBAccess good = new GoodsDBAccess();
         return good.getGods();
@@ -102,6 +103,7 @@ public class Server extends UnicastRemoteObject implements ServerIntf{
         }
     }
 
+    @Override
     public ArrayList<ExchangeRate> exRateRefresh() throws RemoteException{
         ExRateDBAccess exRate = new ExRateDBAccess();
         return exRate.getExRate();
@@ -142,6 +144,4 @@ public class Server extends UnicastRemoteObject implements ServerIntf{
         BankDBAccess nya = new BankDBAccess();
         return nya.delBank(bank);
     }
-    
-    
 }

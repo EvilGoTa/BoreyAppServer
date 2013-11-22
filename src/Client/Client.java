@@ -4,6 +4,7 @@ import appserver.ServerIntf;
 import client_stuff.BookKeeperForm;
 import client_stuff.GoodsManagerForm;
 import client_stuff.LoginForm;
+import client_stuff.ManagerForm;
 import entities.Bank;
 import entities.Currency;
 import entities.ExchangeRate;
@@ -20,6 +21,7 @@ public class Client extends UnicastRemoteObject{
     GoodsManagerForm goodsManage = null;
     BookKeeperForm bookKeeper = null;
     ServerIntf server;
+    ManagerForm manager = null;
     
     public Client() throws RemoteException{
         log = new LoginForm(this);
@@ -39,6 +41,8 @@ public class Client extends UnicastRemoteObject{
         goodsManage.setVisible(true);
         bookKeeper = new BookKeeperForm(this);
         bookKeeper.setVisible(true);
+//        manager = new ManagerForm(this);
+//        manager.setVisible(true);
         
     }
     

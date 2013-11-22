@@ -6,8 +6,6 @@ package client_stuff;
 
 import entities.GoodsInInv;
 import entities.Invoice;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
