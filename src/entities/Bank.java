@@ -17,6 +17,8 @@ public class Bank implements Serializable{
     String location;
     Integer license_num;
 
+    public Bank(){}
+    
     public Bank(Integer id, String name, String address, String location, Integer license_num) {
         this.id = id;
         this.name = name;

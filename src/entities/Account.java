@@ -24,6 +24,8 @@ public class Account implements Serializable{
         this.id = id;
     }
     
+    public Account(){}
+    
     public Account(Integer id, Integer firm_id, Integer currency_id, Integer bank_id, String account_type) {
         this.id = id;
         this.firm_id = firm_id;

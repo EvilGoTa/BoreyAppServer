@@ -15,7 +15,9 @@ public class Currency implements Serializable{
     String name;
     String country;
     String desc;
-
+    
+    public Currency(){}
+    
     public Currency(Integer id, String name, String country, String desc) {
         this.id = id;
         this.name = name;

@@ -37,7 +37,7 @@ public class ReplacesDBAccess extends DBAccess{
         return list;
     }
     
-    public void addReplaces(Replaces rep) {
+    public int addReplaces(Replaces rep) {
         try {
             Connection connection = getConnect();
             PreparedStatement prep = connection.prepareStatement(""
@@ -47,12 +47,14 @@ public class ReplacesDBAccess extends DBAccess{
             prep.setInt(2, rep.getReplace_good_id());                                  
             prep.executeUpdate();
             connection.close();
+            return 1;
         } catch (Exception e) {
             System.out.println(this.getClass().toString() + " problem: "+e.toString());
+            return 0;
         }
     }
     
-    public void editReplaces(Replaces rep) {
+    public int editReplaces(Replaces rep) {
         try {
             Connection connection = getConnect();
             PreparedStatement prep = connection.prepareStatement(""
@@ -65,12 +67,14 @@ public class ReplacesDBAccess extends DBAccess{
             prep.setInt(4, rep.getReplace_good_id());
             prep.executeUpdate();
             connection.close();
+            return 1;
         } catch (Exception e) {
             System.out.println(this.getClass().toString() + " problem: "+e.toString());
+            return 0;
         }
     }
     
-    public void delReplaces(Replaces rep) {
+    public int delReplaces(Replaces rep) {
         try {
             Connection connection = getConnect();
             PreparedStatement prep = connection.prepareStatement(""
@@ -79,8 +83,10 @@ public class ReplacesDBAccess extends DBAccess{
             prep.setInt(2, rep.getReplace_good_id());
             prep.executeUpdate();
             connection.close();
+            return 1;
         } catch (Exception e) {
             System.out.println(this.getClass().toString() + " problem: "+e.toString());
+            return 0;
         }
     }
 }
