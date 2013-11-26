@@ -26,6 +26,8 @@ public class Firm implements Serializable{
         this.license = license;
         this.type = type;
     }
+    
+    public Firm(){}
 
     @Override
     public String toString() {

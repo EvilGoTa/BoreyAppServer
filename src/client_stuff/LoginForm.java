@@ -1,6 +1,7 @@
 package client_stuff;
 
 import Client.Client;
+import java.security.MessageDigest;
 import javax.swing.JFrame;
 
 public class LoginForm extends JFrame {
@@ -97,7 +98,23 @@ public class LoginForm extends JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
-            client.tryConnect(this.jTextIP.getText(), this.jTextIP.getText(), this.jPassword.getPassword());
+            String generatedPassword = null;
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(this.jPassword.getText().getBytes());
+            byte[] bytes = md.digest();
+            StringBuilder sb = new StringBuilder();
+            for(int i=0; i< bytes.length ;i++)
+            {
+                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+            }
+            generatedPassword = sb.toString();
+//            System.out.println(generatedPassword);
+            int con = client.tryConnect(this.jTextIP.getText(), this.jTextLogin.getText(), generatedPassword);
+            if (con == 0)
+                jLabelMessage.setText("Неверный логин и/или пароль.");
+            if (con == -1)
+                jLabelMessage.setText("Не удолось соединиться с сервером");
+//            System.out.println("Role = "+con);
         } catch (Exception e){
             System.out.println("Error LC btn: "+e);
         }

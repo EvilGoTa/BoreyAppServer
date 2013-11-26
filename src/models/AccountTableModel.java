@@ -30,11 +30,11 @@ public class AccountTableModel extends AbstractTableModel{
             case 0:
                 return acc.get(r).getId();
             case 1:
-                return acc.get(r).getFirm_id();
+                return acc.get(r).getFirmName();
             case 2:
-                return acc.get(r).getCurrency_id();
+                return acc.get(r).getCurrencyName();
             case 3:
-                return acc.get(r).getBank_id();
+                return acc.get(r).getBankName();
             case 4:
                 return acc.get(r).getAccount_type();
             default:

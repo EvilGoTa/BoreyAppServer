@@ -34,12 +34,12 @@ public class FirmDBAccess extends DBAccess{
         return list;
     }
     
-    public void addFirm(Firm firm) {
+    public int addFirm(Firm firm) {
         try {
             Connection connection = getConnect();
             PreparedStatement prep = connection.prepareStatement(""
                     + "INSERT INTO FIRM (firm_id, firm_name, firm_country, "
-                    + "firm_address, firm_type) "
+                    + "firm_address, firm_license, firm_type) "
                     + "VALUES (?, ?, ?, ?, ?, ?)");
             prep.setInt(1, firm.getId());
             prep.setString(2, firm.getName());
@@ -49,17 +49,19 @@ public class FirmDBAccess extends DBAccess{
             prep.setString(6, firm.getType());            
             prep.executeUpdate();
             connection.close();
+            return 1;
         } catch (Exception e) {
             System.out.println(this.getClass().toString() + " problem: "+e.toString());
+            return 0;
         }
     }
     
-    public void editFirm(Firm firm) {
+    public int editFirm(Firm firm) {
         try {
             Connection connection = getConnect();
             PreparedStatement prep = connection.prepareStatement(""
                     + "UPDATE FIRM SET firm_name=?, firm_country=?, "
-                    + "fitm_address=?, firm_license=?, firm_type=? "
+                    + "firm_address=?, firm_license=?, firm_type=? "
                     + "WHERE firm_id=?");
             prep.setInt(6, firm.getId());
             prep.setString(1, firm.getName());
@@ -69,12 +71,14 @@ public class FirmDBAccess extends DBAccess{
             prep.setString(5, firm.getType());
             prep.executeUpdate();
             connection.close();
+            return 1;
         } catch (Exception e) {
             System.out.println(this.getClass().toString() + " problem: "+e.toString());
+            return 0;
         }
     }
     
-    public void delFirm(Firm firm) {
+    public int delFirm(Firm firm) {
         try {
             Connection connection = getConnect();
             PreparedStatement prep = connection.prepareStatement(""
@@ -82,8 +86,10 @@ public class FirmDBAccess extends DBAccess{
             prep.setInt(1, firm.getId());
             prep.executeUpdate();
             connection.close();
+            return 1;
         } catch (Exception e) {
             System.out.println(this.getClass().toString() + " problem: "+e.toString());
+            return 0;
         }
     }
 }

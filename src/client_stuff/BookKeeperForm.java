@@ -1,26 +1,32 @@
 package client_stuff;
 
 import Client.Client;
+import entities.Account;
 import entities.Bank;
 import entities.Currency;
 import entities.ExchangeRate;
+import entities.Firm;
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ArrayList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import models.AccountTableModel;
 import models.BankTableModel;
 import models.CurrencyTableModel;
 import models.ExRateTableModel;
+import models.FirmTableModel;
 
 public class BookKeeperForm extends javax.swing.JFrame {
-    Client client = null;
-    int selected = -1;
-    ListSelectionListener selectListen;
-    ArrayList<Currency> currency = null;
-    ArrayList<ExchangeRate> exRate = null;
-    ArrayList<Bank> bank = null;
+    private Client client = null;
+    private int selected = -1;
+    private ListSelectionListener selectListen;
+    private ArrayList<Currency> currency = null;
+    private ArrayList<ExchangeRate> exRate = null;
+    private ArrayList<Bank> bank = null;
+    private ArrayList<Firm> firm = null;
+    private ArrayList<Account> acc = null;
     
     public BookKeeperForm() {
         initComponents();
@@ -52,13 +58,43 @@ public class BookKeeperForm extends javax.swing.JFrame {
         currency = client.refreshCurrency();
         jComboBoxExRateCurr2.removeAllItems();
         for (int i = 0; i < currency.size(); i++){
-            jComboBoxExRateCurr2.addItem(currency.get(i));
+            jComboBoxExRateCurr2.addItem(currency.get(i).getName());
         }
     }
     
     public void bankRefresh() throws RemoteException{
         bank = client.bankRefresh();
         jTable1.setModel(new BankTableModel(bank));
+    }
+    
+    public void firmRefresh() throws RemoteException{
+        firm = client.firmRefresh();
+        jTable1.setModel(new FirmTableModel(firm));
+    }
+    
+    public void accRefresh() throws RemoteException{
+        selected = -1;
+        acc = client.accRefresh();
+        jTable1.setModel(new AccountTableModel(acc));
+        firm = client.firmRefresh();
+        bank = client.bankRefresh();
+        currency = client.refreshCurrency();
+        jComboBoxAccBank.removeAllItems();
+        jComboBoxAccCurrency.removeAllItems();
+        jComboBoxAccFirm.removeAllItems();
+        jTextAccType.setText("");
+        
+        for (int i=0; i<firm.size(); i++){
+            jComboBoxAccFirm.addItem(firm.get(i).getName());
+        }
+        
+        for (int i=0; i<currency.size();i++){
+            jComboBoxAccCurrency.addItem(currency.get(i).getName());
+        }
+        
+        for (int i=0; i<bank.size();i++){
+            jComboBoxAccBank.addItem(bank.get(i).getName());
+        }
     }
     
     @SuppressWarnings("unchecked")
@@ -69,7 +105,7 @@ public class BookKeeperForm extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jTabbedPane3 = new javax.swing.JTabbedPane();
-        jPanel1 = new javax.swing.JPanel();
+        jPanelFirm = new javax.swing.JPanel();
         jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
@@ -81,7 +117,11 @@ public class BookKeeperForm extends javax.swing.JFrame {
         jTextFirmLicense = new javax.swing.JTextField();
         jTextFirmType = new javax.swing.JTextField();
         jButtonFirmAdd = new javax.swing.JButton();
-        jPanel3 = new javax.swing.JPanel();
+        jLabelFirmError = new javax.swing.JLabel();
+        jButtonFirmEdit = new javax.swing.JButton();
+        jButtonFirmDel = new javax.swing.JButton();
+        jButtonFirmRefresh = new javax.swing.JButton();
+        jPanelAccount = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         jComboBoxAccFirm = new javax.swing.JComboBox();
@@ -89,7 +129,12 @@ public class BookKeeperForm extends javax.swing.JFrame {
         jComboBoxAccBank = new javax.swing.JComboBox();
         jLabel12 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
-        jTextFieldAccType = new javax.swing.JTextField();
+        jTextAccType = new javax.swing.JTextField();
+        jLabelAccError = new javax.swing.JLabel();
+        jButtonAccAdd = new javax.swing.JButton();
+        jButtonAccEdit = new javax.swing.JButton();
+        jButtonAccDel = new javax.swing.JButton();
+        jButtonAccRefresh = new javax.swing.JButton();
         jPanelBank = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
@@ -104,7 +149,14 @@ public class BookKeeperForm extends javax.swing.JFrame {
         jButtonBankEdit = new javax.swing.JButton();
         jButtonBankDel = new javax.swing.JButton();
         jButtonBankRefresh = new javax.swing.JButton();
-        jPanel4 = new javax.swing.JPanel();
+        jPanelPO = new javax.swing.JPanel();
+        jLabel19 = new javax.swing.JLabel();
+        jComboBoxPOAcc = new javax.swing.JComboBox();
+        jLabel20 = new javax.swing.JLabel();
+        jComboBoxPOInv = new javax.swing.JComboBox();
+        jButtonPOAdd = new javax.swing.JButton();
+        jButtonPODel = new javax.swing.JButton();
+        jButtonPORefresh = new javax.swing.JButton();
         jPanelExchangeRate = new javax.swing.JPanel();
         jComboBoxExRateCurr2 = new javax.swing.JComboBox();
         jButtonExRateAdd = new javax.swing.JButton();
@@ -146,6 +198,12 @@ public class BookKeeperForm extends javax.swing.JFrame {
         jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_LAST_COLUMN);
         jScrollPane1.setViewportView(jTable1);
 
+        jPanelFirm.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                jPanelFirmComponentShown(evt);
+            }
+        });
+
         jLabel14.setText("Название фирмы");
 
         jLabel15.setText("Страна");
@@ -158,60 +216,108 @@ public class BookKeeperForm extends javax.swing.JFrame {
         jLabel18.setText("Тип");
 
         jButtonFirmAdd.setText("Добавить");
+        jButtonFirmAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonFirmAddActionPerformed(evt);
+            }
+        });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        jLabelFirmError.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabelFirmError.setText("NYa");
+
+        jButtonFirmEdit.setText("Редактировать");
+        jButtonFirmEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonFirmEditActionPerformed(evt);
+            }
+        });
+
+        jButtonFirmDel.setText("Удалить");
+        jButtonFirmDel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonFirmDelActionPerformed(evt);
+            }
+        });
+
+        jButtonFirmRefresh.setText("Обновить");
+        jButtonFirmRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonFirmRefreshActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanelFirmLayout = new javax.swing.GroupLayout(jPanelFirm);
+        jPanelFirm.setLayout(jPanelFirmLayout);
+        jPanelFirmLayout.setHorizontalGroup(
+            jPanelFirmLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelFirmLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanelFirmLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelFirmLayout.createSequentialGroup()
+                        .addGroup(jPanelFirmLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel14)
                             .addComponent(jLabel15)
                             .addComponent(jLabel16)
                             .addComponent(jLabel17)
                             .addComponent(jLabel18))
                         .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(jPanelFirmLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jTextFirmName)
                             .addComponent(jTextFirmCountry)
                             .addComponent(jTextFirmAdress)
                             .addComponent(jTextFirmLicense)
                             .addComponent(jTextFirmType, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)))
-                    .addComponent(jButtonFirmAdd))
+                    .addComponent(jLabelFirmError)
+                    .addGroup(jPanelFirmLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jButtonFirmRefresh, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonFirmDel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonFirmEdit, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonFirmAdd, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap(273, Short.MAX_VALUE))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        jPanelFirmLayout.setVerticalGroup(
+            jPanelFirmLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelFirmLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanelFirmLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel14)
                     .addComponent(jTextFirmName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanelFirmLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel15)
                     .addComponent(jTextFirmCountry, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanelFirmLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel16)
                     .addComponent(jTextFirmAdress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanelFirmLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel17)
                     .addComponent(jTextFirmLicense, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanelFirmLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel18)
                     .addComponent(jTextFirmType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
+                .addComponent(jLabelFirmError)
                 .addGap(18, 18, 18)
                 .addComponent(jButtonFirmAdd)
-                .addContainerGap(206, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonFirmEdit)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonFirmDel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonFirmRefresh)
+                .addContainerGap(93, Short.MAX_VALUE))
         );
 
-        jTabbedPane3.addTab("Клиенты", jPanel1);
+        jTabbedPane3.addTab("Клиенты", jPanelFirm);
+
+        jPanelAccount.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                jPanelAccountComponentShown(evt);
+            }
+        });
 
         jLabel10.setText("Фирма");
 
@@ -221,48 +327,97 @@ public class BookKeeperForm extends javax.swing.JFrame {
 
         jLabel13.setText("Тип");
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
+        jLabelAccError.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabelAccError.setText("NYa");
+
+        jButtonAccAdd.setText("Добавить");
+        jButtonAccAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAccAddActionPerformed(evt);
+            }
+        });
+
+        jButtonAccEdit.setText("Редактировать");
+        jButtonAccEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAccEditActionPerformed(evt);
+            }
+        });
+
+        jButtonAccDel.setText("Удалить");
+        jButtonAccDel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAccDelActionPerformed(evt);
+            }
+        });
+
+        jButtonAccRefresh.setText("Обновить");
+        jButtonAccRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAccRefreshActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanelAccountLayout = new javax.swing.GroupLayout(jPanelAccount);
+        jPanelAccount.setLayout(jPanelAccountLayout);
+        jPanelAccountLayout.setHorizontalGroup(
+            jPanelAccountLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelAccountLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel10)
-                    .addComponent(jLabel11)
-                    .addComponent(jLabel12)
-                    .addComponent(jLabel13))
-                .addGap(68, 68, 68)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextFieldAccType)
-                    .addComponent(jComboBoxAccBank, 0, 120, Short.MAX_VALUE)
-                    .addComponent(jComboBoxAccCurrency, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jComboBoxAccFirm, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(324, Short.MAX_VALUE))
+                .addGroup(jPanelAccountLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelAccountLayout.createSequentialGroup()
+                        .addGroup(jPanelAccountLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel10)
+                            .addComponent(jLabel11)
+                            .addComponent(jLabel12)
+                            .addComponent(jLabel13))
+                        .addGap(68, 68, 68)
+                        .addGroup(jPanelAccountLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jComboBoxAccFirm, 0, 207, Short.MAX_VALUE)
+                            .addComponent(jComboBoxAccCurrency, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jComboBoxAccBank, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jTextAccType)))
+                    .addComponent(jLabelAccError)
+                    .addGroup(jPanelAccountLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jButtonAccRefresh, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonAccDel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonAccAdd, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonAccEdit, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap(237, Short.MAX_VALUE))
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
+        jPanelAccountLayout.setVerticalGroup(
+            jPanelAccountLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelAccountLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanelAccountLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
                     .addComponent(jComboBoxAccFirm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanelAccountLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel11)
-                    .addComponent(jComboBoxAccCurrency, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jComboBoxAccCurrency, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanelAccountLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jComboBoxAccBank, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel12))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanelAccountLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel13)
-                    .addComponent(jTextFieldAccType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(258, Short.MAX_VALUE))
+                    .addComponent(jTextAccType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabelAccError)
+                .addGap(18, 18, 18)
+                .addComponent(jButtonAccAdd)
+                .addGap(4, 4, 4)
+                .addComponent(jButtonAccEdit)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonAccDel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonAccRefresh)
+                .addContainerGap(107, Short.MAX_VALUE))
         );
 
-        jTabbedPane3.addTab("Банк.Счета", jPanel3);
+        jTabbedPane3.addTab("Банк.Счета", jPanelAccount);
 
         jPanelBank.addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
@@ -380,18 +535,59 @@ public class BookKeeperForm extends javax.swing.JFrame {
 
         jTabbedPane3.addTab("Банки", jPanelBank);
 
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 561, Short.MAX_VALUE)
+        jLabel19.setText("Счет");
+
+        jLabel20.setText("Накладная");
+
+        jButtonPOAdd.setText("Оплачено");
+
+        jButtonPODel.setText("Удалить");
+        jButtonPODel.setToolTipText("");
+
+        jButtonPORefresh.setText("Обновить");
+
+        javax.swing.GroupLayout jPanelPOLayout = new javax.swing.GroupLayout(jPanelPO);
+        jPanelPO.setLayout(jPanelPOLayout);
+        jPanelPOLayout.setHorizontalGroup(
+            jPanelPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelPOLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanelPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelPOLayout.createSequentialGroup()
+                        .addGroup(jPanelPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel20)
+                            .addComponent(jLabel19))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanelPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jComboBoxPOAcc, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jComboBoxPOInv, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanelPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jButtonPORefresh, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
+                        .addComponent(jButtonPODel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonPOAdd, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap(192, Short.MAX_VALUE))
         );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 382, Short.MAX_VALUE)
+        jPanelPOLayout.setVerticalGroup(
+            jPanelPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelPOLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanelPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel19)
+                    .addComponent(jComboBoxPOAcc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanelPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel20)
+                    .addComponent(jComboBoxPOInv, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jButtonPOAdd)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButtonPODel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButtonPORefresh)
+                .addContainerGap(216, Short.MAX_VALUE))
         );
 
-        jTabbedPane3.addTab("Вх.Платежные поручения", jPanel4);
+        jTabbedPane3.addTab("Вх.Платежные поручения", jPanelPO);
 
         jPanelExchangeRate.addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
@@ -588,7 +784,7 @@ public class BookKeeperForm extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(22, 22, 22)
-                .addComponent(jTabbedPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 566, Short.MAX_VALUE)
+                .addComponent(jTabbedPane3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 549, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -726,7 +922,7 @@ public class BookKeeperForm extends javax.swing.JFrame {
                 public void valueChanged(ListSelectionEvent e) {
                     selected = jTable1.getSelectedRow();
                     if (selected >=0 && exRate.size()>selected){
-                        if (selected < currency.size() && selected >=0){
+//                        if (selected < currency.size() && selected >=0){ //что? зачем?
                             int c = exRate.get(selected).getCurrency_id_2();
                             boolean nya = true;
                             int d=-1;
@@ -742,7 +938,7 @@ public class BookKeeperForm extends javax.swing.JFrame {
                             float cur;
                             cur=1/rate;
                             jTextExRateCurr2.setText(new Float(cur).toString());
-                        }
+//                        }
                     }
                 }
             });
@@ -783,6 +979,8 @@ public class BookKeeperForm extends javax.swing.JFrame {
             rate=cur1/cur2;
             newRate.setRatio(rate);
             newRate.setDate(new SimpleDateFormat("dd.MM.yyyy").format(new Date()));
+            
+            //TODO Удалить после добавления триггера
             if (exRate.isEmpty()){
                 newRate.setId(0);
             }
@@ -901,6 +1099,8 @@ public class BookKeeperForm extends javax.swing.JFrame {
             newBank.setAddress(jTextBankAdress.getText());
             newBank.setLocation(jTextBankCountry.getText());
             newBank.setLicense_num(new Integer(jTextBankLicense.getText()));
+            
+            //TODO Удалить после добавления триггера
             if (bank.isEmpty()){
                 newBank.setId(0);
             }
@@ -913,6 +1113,7 @@ public class BookKeeperForm extends javax.swing.JFrame {
                 }
                 newBank.setId(max+1);
             }
+            
             if (client.addBank(newBank) == 1){
                 jLabelBankError.setText("Добавление успешно");
                 bankRefresh();
@@ -928,7 +1129,283 @@ public class BookKeeperForm extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jButtonBankAddActionPerformed
 
+    private void jPanelFirmComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jPanelFirmComponentShown
+        selected = -1;
+        selectListen = null;
+        jTextFirmName.setText("");
+        jTextFirmAdress.setText("");
+        jTextFirmCountry.setText("");
+        jTextFirmLicense.setText("");
+        jTextFirmType.setText("");
+        jLabelFirmError.setText("");
+        try{
+            firmRefresh();
+            jTable1.getSelectionModel().addListSelectionListener(selectListen = new ListSelectionListener() {
+
+                @Override
+                public void valueChanged(ListSelectionEvent e) {
+                    selected = jTable1.getSelectedRow();
+                    if (selected >=0 && firm.size()>selected){
+                        jTextFirmName.setText(firm.get(selected).getName());
+                        jTextFirmCountry.setText(firm.get(selected).getCountry());
+                        jTextFirmAdress.setText(firm.get(selected).getAddress());
+                        jTextFirmLicense.setText(firm.get(selected).getLicense().toString());
+                        jTextFirmType.setText(firm.get(selected).getType());
+                    }
+                }
+            });
+        }
+        catch(Exception e){
+            System.out.println("Firm_show: "+e);
+        }
+        
+    }//GEN-LAST:event_jPanelFirmComponentShown
+
+    private void jButtonFirmAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFirmAddActionPerformed
+        Firm newFirm = new Firm();
+        try{
+            newFirm.setName(jTextFirmName.getText());
+            newFirm.setCountry(jTextFirmCountry.getText());
+            newFirm.setAddress(jTextFirmAdress.getText());
+            newFirm.setLicense(new Integer(jTextFirmLicense.getText()));
+            newFirm.setType(jTextFirmType.getText());
+            
+            //TODO Удалить после добавления триггера.
+            if (firm.isEmpty()){
+                newFirm.setId(0);
+            }
+            else{
+                int max = 0;
+                for (int i=0; i<firm.size();i++){
+                    if (firm.get(i).getId()>max){
+                        max=firm.get(i).getId();
+                    }
+                }
+                newFirm.setId(max+1);
+            }
+            
+            if (client.addFirm(newFirm) == 1){
+                jLabelFirmError.setText("Добавление успешно");
+                firmRefresh();
+            }
+            else{
+                jLabelFirmError.setText("Добавление ошибка");
+            }
+        }
+        catch(Exception e){
+            System.out.println("FirmAdd: "+e);
+            jLabelFirmError.setText("Добавление ошибка. ПРоверьте данные.");
+        }
+    }//GEN-LAST:event_jButtonFirmAddActionPerformed
+
+    private void jButtonFirmEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFirmEditActionPerformed
+                Firm newFirm = new Firm();
+        try{
+            newFirm.setName(jTextFirmName.getText());
+            newFirm.setCountry(jTextFirmCountry.getText());
+            newFirm.setAddress(jTextFirmAdress.getText());
+            newFirm.setLicense(new Integer(jTextFirmLicense.getText()));
+            newFirm.setType(jTextFirmType.getText());
+            newFirm.setId(firm.get(selected).getId());
+            
+            if (client.editFirm(newFirm) == 1){
+                jLabelFirmError.setText("Редактирование успешно");
+                firmRefresh();
+            }
+            else{
+                jLabelFirmError.setText("Редактирование ошибка");
+            }
+        }
+        catch(Exception e){
+            System.out.println("FirmAdd: "+e);
+            jLabelFirmError.setText("Редактирование ошибка. ПРоверьте данные.");
+        }
+    }//GEN-LAST:event_jButtonFirmEditActionPerformed
+
+    private void jButtonFirmDelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFirmDelActionPerformed
+        try{
+            if (selected>=0){
+                if (client.delFirm(firm.get(selected))==1){
+                    jLabelFirmError.setText("Удаление ОК");
+                    firmRefresh();
+                }
+                else{
+                    jLabelFirmError.setText("Удаление: ошибка.");
+                }
+            }
+            else{
+                jLabelFirmError.setText("Удаление ошибка");
+            }
+        }
+        catch(Exception e){
+            System.out.println("FirmDel: "+e);
+            this.jLabelFirmError.setText("Удаление ошибка");
+        }
+    }//GEN-LAST:event_jButtonFirmDelActionPerformed
+
+    private void jPanelAccountComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jPanelAccountComponentShown
+        selected = -1;
+        selectListen = null;
+        jComboBoxAccBank.removeAllItems();
+        jComboBoxAccCurrency.removeAllItems();
+        jComboBoxAccFirm.removeAllItems();
+        jTextAccType.setText("");
+        jLabelAccError.setText("");
+        try{
+            accRefresh();
+            jTable1.getSelectionModel().addListSelectionListener(selectListen = new ListSelectionListener() {
+
+                @Override
+                public void valueChanged(ListSelectionEvent e) {
+                    selected = jTable1.getSelectedRow();
+                    if (selected >=0 && acc.size()>selected){
+                        
+                        int c = acc.get(selected).getBank_id();
+                        boolean nya = true;
+                        int d = -1;
+                        for (int i=0; i<bank.size() && nya; i++){
+                                if (c == bank.get(i).getId()){
+                                    d=i;
+                                    nya=false;
+                                }
+                        }
+                        jComboBoxAccBank.setSelectedIndex(d);
+                        
+                        c = acc.get(selected).getFirm_id();
+                        nya = true;
+                        d = -1;
+                        for (int i=0; i<firm.size() && nya; i++){
+                            if (c == firm.get(i).getId()){
+                                d = i;
+                                nya = false;
+                            }
+                        }
+                        jComboBoxAccFirm.setSelectedIndex(d);
+                        
+                        c = acc.get(selected).getCurrency_id();
+                        nya = true;
+                        d = -1;
+                        for (int i=0; i<currency.size();i++){
+                            if (c == currency.get(i).getId()){
+                                d = i;
+                                nya = false;
+                            }
+                        }
+                        jComboBoxAccCurrency.setSelectedIndex(d);
+                        
+                        jTextAccType.setText(acc.get(selected).getAccount_type());
+                    }
+                }
+            });
+            
+        }
+        catch(Exception e){
+            System.out.println("AccShow: "+e);
+        }
+    }//GEN-LAST:event_jPanelAccountComponentShown
+
+    private void jButtonAccAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAccAddActionPerformed
+        Account newAcc = new Account();
+        try{
+            newAcc.setAccount_type(jTextAccType.getText());
+            newAcc.setBank_id(bank.get(jComboBoxAccBank.getSelectedIndex()).getId());
+            newAcc.setCurrency_id(currency.get(jComboBoxAccCurrency.getSelectedIndex()).getId());
+            newAcc.setFirm_id(firm.get(jComboBoxAccFirm.getSelectedIndex()).getId());
+            
+            //TODO Удалить после добавления триггера
+            if (acc.isEmpty()){
+                newAcc.setId(0);
+            }
+            else{
+                int max=0;
+                for (int i=0; i<acc.size();i++){
+                    if (acc.get(i).getId()>max){
+                        max=acc.get(i).getId();
+                    }
+                }
+                newAcc.setId(max+1);
+            }
+            
+            if(client.addAccount(newAcc)==1){
+                jLabelAccError.setText("Добавление OK");
+                accRefresh();
+            }
+            else{
+                jLabelAccError.setText("Добавление Error");
+            }
+        }
+        catch(Exception e){
+            System.out.println("AccAdd: "+e);
+            jLabelAccError.setText("Добавление ошибка.");
+        }
+    }//GEN-LAST:event_jButtonAccAddActionPerformed
+
+    private void jButtonAccEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAccEditActionPerformed
+        Account newAcc = new Account();
+        try{
+            newAcc.setAccount_type(jTextAccType.getText());
+            newAcc.setBank_id(bank.get(jComboBoxAccBank.getSelectedIndex()).getId());
+            newAcc.setCurrency_id(currency.get(jComboBoxAccCurrency.getSelectedIndex()).getId());
+            newAcc.setFirm_id(firm.get(jComboBoxAccFirm.getSelectedIndex()).getId());
+            newAcc.setId(acc.get(selected).getBank_id());
+            
+            if(client.editAccount(newAcc)==1){
+                jLabelAccError.setText("Редактирование OK");
+                accRefresh();
+            }
+            else{
+                jLabelAccError.setText("Редактирование Error");
+            }
+        }
+        catch(Exception e){
+            System.out.println("AccEDIT: "+e);
+            jLabelAccError.setText("Редактирование ошибка.");
+        }
+    }//GEN-LAST:event_jButtonAccEditActionPerformed
+
+    private void jButtonAccRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAccRefreshActionPerformed
+        try{
+            accRefresh();
+        }
+        catch(Exception e){
+            System.out.println("AccRefresh: "+e);
+        }
+    }//GEN-LAST:event_jButtonAccRefreshActionPerformed
+
+    private void jButtonFirmRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFirmRefreshActionPerformed
+        try {
+            firmRefresh();
+        } catch (Exception ex) {
+            System.out.println("FirmRefresh: "+ex);
+        }
+    }//GEN-LAST:event_jButtonFirmRefreshActionPerformed
+
+    private void jButtonAccDelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAccDelActionPerformed
+        try{
+            if (selected>=0){
+                if (client.delAccount(acc.get(selected))==1){
+                    jLabelAccError.setText("Удаление ОК");
+                    accRefresh();
+                }
+                else{
+                    jLabelAccError.setText("Удаление: ошибка.");
+                }
+            }
+            else{
+                jLabelAccError.setText("Удаление ошибка");
+            }            
+        }
+        catch(Exception e){
+            System.out.println("AccDel: "+e);
+            jLabelAccError.setText("Удаление ошибка");
+        }
+    }//GEN-LAST:event_jButtonAccDelActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonAccAdd;
+    private javax.swing.JButton jButtonAccDel;
+    private javax.swing.JButton jButtonAccEdit;
+    private javax.swing.JButton jButtonAccRefresh;
     private javax.swing.JButton jButtonBankAdd;
     private javax.swing.JButton jButtonBankDel;
     private javax.swing.JButton jButtonBankEdit;
@@ -940,10 +1417,18 @@ public class BookKeeperForm extends javax.swing.JFrame {
     private javax.swing.JButton jButtonExRateAdd;
     private javax.swing.JButton jButtonExRateDel;
     private javax.swing.JButton jButtonFirmAdd;
+    private javax.swing.JButton jButtonFirmDel;
+    private javax.swing.JButton jButtonFirmEdit;
+    private javax.swing.JButton jButtonFirmRefresh;
+    private javax.swing.JButton jButtonPOAdd;
+    private javax.swing.JButton jButtonPODel;
+    private javax.swing.JButton jButtonPORefresh;
     private javax.swing.JComboBox jComboBoxAccBank;
     private javax.swing.JComboBox jComboBoxAccCurrency;
     private javax.swing.JComboBox jComboBoxAccFirm;
     private javax.swing.JComboBox jComboBoxExRateCurr2;
+    private javax.swing.JComboBox jComboBoxPOAcc;
+    private javax.swing.JComboBox jComboBoxPOInv;
     private javax.swing.JComboBox jComboBoxRub;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -955,7 +1440,9 @@ public class BookKeeperForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -963,20 +1450,23 @@ public class BookKeeperForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JLabel jLabelAccError;
     private javax.swing.JLabel jLabelBankError;
     private javax.swing.JLabel jLabelCurrError;
     private javax.swing.JLabel jLabelExRateError;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel jLabelFirmError;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanelAccount;
     private javax.swing.JPanel jPanelBank;
     private javax.swing.JPanel jPanelCurrency;
     private javax.swing.JPanel jPanelExchangeRate;
+    private javax.swing.JPanel jPanelFirm;
+    private javax.swing.JPanel jPanelPO;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane3;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTextField jTextAccType;
     private javax.swing.JTextField jTextBankAdress;
     private javax.swing.JTextField jTextBankCountry;
     private javax.swing.JTextField jTextBankLicense;
@@ -986,7 +1476,6 @@ public class BookKeeperForm extends javax.swing.JFrame {
     private javax.swing.JTextField jTextCurrName;
     private javax.swing.JTextField jTextExRateCurr1;
     private javax.swing.JTextField jTextExRateCurr2;
-    private javax.swing.JTextField jTextFieldAccType;
     private javax.swing.JTextField jTextFirmAdress;
     private javax.swing.JTextField jTextFirmCountry;
     private javax.swing.JTextField jTextFirmLicense;
