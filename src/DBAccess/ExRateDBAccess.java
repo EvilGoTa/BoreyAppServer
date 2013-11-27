@@ -39,7 +39,7 @@ public class ExRateDBAccess extends DBAccess{
         return list;
     }
     
-    public void addExRate(ExchangeRate exrate) {
+    public int addExRate(ExchangeRate exrate) {
         try {
             Connection connection = getConnect();
             PreparedStatement prep = connection.prepareStatement(""
@@ -53,12 +53,14 @@ public class ExRateDBAccess extends DBAccess{
             prep.setFloat(5, exrate.getRatio());         
             prep.executeUpdate();
             connection.close();
+            return 1;
         } catch (Exception e) {
             System.out.println(this.getClass().toString() + " prblem: "+e.toString());
+            return 0;
         }
     }
     
-    public void editExRate(ExchangeRate exrate) {
+    public int editExRate(ExchangeRate exrate) {
         try {
             Connection connection = getConnect();
             PreparedStatement prep = connection.prepareStatement(""
@@ -72,12 +74,14 @@ public class ExRateDBAccess extends DBAccess{
             prep.setFloat(4, exrate.getRatio());
             prep.executeUpdate();
             connection.close();
+            return 1;
         } catch (Exception e) {
             System.out.println(this.getClass().toString() + " prblem: "+e.toString());
+            return 0;
         }
     }
     
-    public void delExRate(ExchangeRate exrate) {
+    public int delExRate(ExchangeRate exrate) {
         try {
             Connection connection = getConnect();
             PreparedStatement prep = connection.prepareStatement(""
@@ -85,8 +89,10 @@ public class ExRateDBAccess extends DBAccess{
             prep.setInt(1, exrate.getId());
             prep.executeUpdate();
             connection.close();
+            return 1;
         } catch (Exception e) {
             System.out.println(this.getClass().toString() + " prblem: "+e.toString());
+            return 0;
         }
     }
 }

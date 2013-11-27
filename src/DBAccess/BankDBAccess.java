@@ -35,7 +35,7 @@ public class BankDBAccess extends DBAccess{
         return list;
     }
     
-    public void addBank(Bank bank) {
+    public int addBank(Bank bank) {
         try {
             Connection connection = getConnect();
             PreparedStatement prep = connection.prepareStatement(""
@@ -49,12 +49,14 @@ public class BankDBAccess extends DBAccess{
             prep.setInt(5, bank.getLicense_num());
             prep.executeUpdate();
             connection.close();
+            return 1;
         } catch (Exception e) {
             System.out.println("BankDBA prblem: "+e.toString());
+            return 0;
         }
     }
     
-    public void editGoods(Bank bank) {
+    public int editBank(Bank bank) {
         try {
             Connection connection = getConnect();
             PreparedStatement prep = connection.prepareStatement(""
@@ -68,12 +70,14 @@ public class BankDBAccess extends DBAccess{
             prep.setInt(4, bank.getLicense_num());
             prep.executeUpdate();
             connection.close();
+            return 1;
         } catch (Exception e) {
             System.out.println("BankDBA prblem: "+e.toString());
+            return 0;
         }
     }
     
-    public void delGoods(Bank bank) {
+    public int delBank(Bank bank) {
         try {
             Connection connection = getConnect();
             PreparedStatement prep = connection.prepareStatement(""
@@ -81,8 +85,10 @@ public class BankDBAccess extends DBAccess{
             prep.setInt(1, bank.getId());
             prep.executeUpdate();
             connection.close();
+            return 1;
         } catch (Exception e) {
             System.out.println("BankDBA prblem: "+e.toString());
+            return 0;
         }
     }
 }

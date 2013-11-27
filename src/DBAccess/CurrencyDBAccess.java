@@ -33,7 +33,7 @@ public class CurrencyDBAccess extends DBAccess{
         return list;
     }
     
-    public void addCurrency(Currency curr) {
+    public int addCurrency(Currency curr) {
         try {
             Connection connection = getConnect();
             PreparedStatement prep = connection.prepareStatement(""
@@ -46,12 +46,14 @@ public class CurrencyDBAccess extends DBAccess{
             prep.setString(4, curr.getDesc());
             prep.executeUpdate();
             connection.close();
+            return 1;
         } catch (Exception e) {
             System.out.println("CurrencyDBA prblem: "+e.toString());
+            return 0;
         }
     }
     
-    public void editCurrency(Currency curr) {
+    public int editCurrency(Currency curr) {
         try {
             Connection connection = getConnect();
             PreparedStatement prep = connection.prepareStatement(""
@@ -64,12 +66,14 @@ public class CurrencyDBAccess extends DBAccess{
             prep.setString(3, curr.getDesc());
             prep.executeUpdate();
             connection.close();
+            return 1;
         } catch (Exception e) {
             System.out.println("CurrencyDBA prblem: "+e.toString());
+            return 0;
         }
     }
     
-    public void delCurrency(Currency curr) {
+    public int delCurrency(Currency curr) {
         try {
             Connection connection = getConnect();
             PreparedStatement prep = connection.prepareStatement(""
@@ -77,8 +81,10 @@ public class CurrencyDBAccess extends DBAccess{
             prep.setInt(1, curr.getId());
             prep.executeUpdate();
             connection.close();
+            return 1;
         } catch (Exception e) {
             System.out.println(this.getClass().toString() + " prblem: "+e.toString());
+            return 0;
         }
     }
 }

@@ -36,7 +36,7 @@ public class GoodsDBAccess extends DBAccess{
         return goodsList;
     }
     
-    public void addGoods(Goods goods) {
+    public int addGoods(Goods goods) {
         try {
             Connection connection = getConnect();
             PreparedStatement prep = connection.prepareStatement(""
@@ -52,12 +52,14 @@ public class GoodsDBAccess extends DBAccess{
             prep.setInt(7, goods.getCount());
             prep.executeUpdate();
             connection.close();
+            return 1;
         } catch (Exception e) {
             System.out.println("GoodsDBA prblem: "+e.toString());
+            return 0;
         }
     }
     
-    public void editGoods(Goods goods) {
+    public int editGoods(Goods goods) {
         try {
             Connection connection = getConnect();
             PreparedStatement prep = connection.prepareStatement(""
@@ -74,12 +76,14 @@ public class GoodsDBAccess extends DBAccess{
             prep.setInt(6, goods.getCount());
             prep.executeUpdate();
             connection.close();
+            return 1;
         } catch (Exception e) {
             System.out.println("GoodsDBA prblem: "+e.toString());
+            return 0;
         }
     }
     
-    public void delGoods(Goods goods) {
+    public int delGoods(Goods goods) {
         try {
             Connection connection = getConnect();
             PreparedStatement prep = connection.prepareStatement(""
@@ -87,8 +91,10 @@ public class GoodsDBAccess extends DBAccess{
             prep.setInt(1, goods.getId());
             prep.executeUpdate();
             connection.close();
+            return 1;
         } catch (Exception e) {
             System.out.println("GoodsDBA prblem: "+e.toString());
+            return 0;
         }
     }
 }

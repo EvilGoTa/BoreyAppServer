@@ -18,7 +18,7 @@ public class DBAccess {
         } catch (Exception e) {
             System.out.println("magic words didnt help: "+e.toString());
         }
-        Connection con = DriverManager.getConnection("jdbc:oracle:thin:@//localhost:1521/orcl", "gota", "gota");
+        Connection con = DriverManager.getConnection("jdbc:oracle:thin:@//localhost:1521/orcl", "nyasha", "nyasha");
         return con; 
     }
     

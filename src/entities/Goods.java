@@ -18,6 +18,8 @@ public class Goods implements Serializable{
     String firm_name;
     Integer count;
     Integer price;
+    
+    public Goods(){}
 
     public Goods(Integer id, String name, Integer class_num, String tara, String firm_name, Integer count, Integer price) {
         this.id = id;

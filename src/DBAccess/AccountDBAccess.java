@@ -39,7 +39,7 @@ public class AccountDBAccess extends DBAccess{
         return list;
     }
     
-    public void addAccount(Account account) {
+    public int addAccount(Account account) {
         try {
             Connection connection = getConnect();
             PreparedStatement prep = connection.prepareStatement(""
@@ -54,12 +54,14 @@ public class AccountDBAccess extends DBAccess{
             
             prep.executeUpdate();
             connection.close();
+            return 1;
         } catch (Exception e) {
             System.out.println("AccountDBA prblem: "+e.toString());
+            return 0;
         }
     }
     
-    public void editAccount(Account acc) {
+    public int editAccount(Account acc) {
         try {
             Connection connection = getConnect();
             PreparedStatement prep = connection.prepareStatement(""
@@ -73,12 +75,14 @@ public class AccountDBAccess extends DBAccess{
             prep.setString(4, acc.getAccount_type());
             prep.executeUpdate();
             connection.close();
+            return 1;
         } catch (Exception e) {
             System.out.println("BankDBA prblem: "+e.toString());
+            return 0;
         }
     }
     
-    public void deleteAccount(Account acc) {
+    public int deleteAccount(Account acc) {
         try {
             Connection connection = getConnect();
             PreparedStatement prep = connection.prepareStatement(""
@@ -86,8 +90,10 @@ public class AccountDBAccess extends DBAccess{
             prep.setInt(1, acc.getId());
             prep.executeUpdate();
             connection.close();
+            return 1;
         } catch (Exception e) {
             System.out.println("AccountDBA prblem: "+e.toString());
+            return 0;
         }
     }
 }

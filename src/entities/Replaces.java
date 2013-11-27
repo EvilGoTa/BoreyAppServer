@@ -14,7 +14,9 @@ public class Replaces implements Serializable{
     Integer good_id;
     Integer replace_good_id;
     String name1, name2;
-
+    
+    public Replaces(){}
+    
     public Replaces(Integer good_id, Integer replace_good_id) {
         this.good_id = good_id;
         this.replace_good_id = replace_good_id;
