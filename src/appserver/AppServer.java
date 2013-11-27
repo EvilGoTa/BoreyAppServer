@@ -5,13 +5,19 @@
 package appserver;
 
 import DBAccess.GoodsDBAccess;
+import java.net.MalformedURLException;
 import java.rmi.Naming;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
 import remote.RemoteGoodsKeeper;
+import roles.Boss;
 import roles.GoodsKeeper;
+import roles.Login;
+import roles.Manager;
 
 /**
  *
@@ -48,11 +54,26 @@ public class AppServer {
         /* rmi test */
         
         try {
-            String name = "GoodsKeeper";
-            GoodsKeeper gk = new GoodsKeeper();
-            Naming.rebind(name, gk); 
-            System.out.println("GoodsKeeper bound");
-        } catch (Exception e) {
+            String name = "Manager";
+            Manager role = new Manager();
+            Naming.rebind(name, role); 
+            System.out.println(name+" bound");
+            
+            name = "Boss";
+            Boss role1 = new Boss();
+            Naming.rebind(name, role1); 
+            System.out.println(name+" bound");
+            
+            String name2 = "GoodsKeeper";
+            GoodsKeeper role2 = new GoodsKeeper();
+            Naming.rebind(name2, role2); 
+            System.out.println(name2+" bound");
+            
+            String name3 = "Login";
+            Login role3 = new Login();
+            Naming.rebind(name3, role3); 
+            System.out.println(name3+" bound");
+        } catch (RemoteException | MalformedURLException e) {
             System.out.println("error: "+e.toString());
             //e.printStackTrace();
         }

@@ -4,16 +4,22 @@
  */
 package client_stuff;
 
+import DBAccess.UsersDBAccess;
 import entities.Firm;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import models.FirmModel;
 import models.ReportModel;
 import remote.RemoteBoss;
+
 
 /**
  *
@@ -49,6 +55,8 @@ public class BossForm extends javax.swing.JFrame {
         } catch (Exception e) {
             System.out.println(e);
         }
+        
+        
     }
 
     /**
