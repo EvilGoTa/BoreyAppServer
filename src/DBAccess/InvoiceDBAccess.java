@@ -9,7 +9,9 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import entities.Invoice;
+import entities.InvoiceReport;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 /**
  *
@@ -34,6 +36,26 @@ public class InvoiceDBAccess extends DBAccess{
             System.out.println(this.getClass().toString() + " problem: "+e.toString());
         }
         return list;
+    }
+    
+    public ArrayList<InvoiceReport> getReport() throws SQLException {
+        ArrayList<InvoiceReport> reportList = new ArrayList();
+        Connection connection = getConnect();
+        Statement statement = connection.createStatement();
+        String query = 
+                "select firm.firm_name, sum(goods.goods_price*goods_in_inv.gin_goods_count) s from invoice " +
+                "left join firm on firm.firm_id = invoice.inv_firm_id " +
+                "left join goods_in_inv on goods_in_inv.gin_inv_id = invoice.inv_id " +
+                "left join goods on goods.goods_id = goods_in_inv.gin_goods_id " +
+                "where inv_id not in (select distinct po_invoice_id from payment_order) " +
+                "group by firm.firm_name";
+        ResultSet set = statement.executeQuery(query);
+            while(set.next()){
+                reportList.add(new InvoiceReport(0, set.getString("firm_name"), 
+                        set.getInt("s")));
+            }
+            connection.close();
+        return reportList;
     }
     
     public void addInvoice(Invoice inv) {
