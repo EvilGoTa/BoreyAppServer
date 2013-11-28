@@ -4,18 +4,21 @@
  */
 package DBAccess;
 
+import entities.Goods;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import entities.Replaces;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 /**
  *
  * @author Роман
  */
 public class ReplacesDBAccess extends DBAccess{
+    
     public ArrayList<Replaces> getReplaces() {
         ArrayList<Replaces> list = new ArrayList<>();
         try {
@@ -24,7 +27,7 @@ public class ReplacesDBAccess extends DBAccess{
             String query = "Select rep_good_id, g1.goods_name name1, rep_replace_good_id, g2.goods_name name2 "
                 +"from replaces "
                 +"left join goods g1 on g1.goods_id = replaces.rep_good_id "
-                +"left join goods g2 on g2.goods_id = replaces.rep_replace_good_id;";
+                +"left join goods g2 on g2.goods_id = replaces.rep_replace_good_id";
             ResultSet set = statement.executeQuery(query);
             while(set.next()){
                 list.add(new Replaces(set.getInt("rep_good_id"), set.getInt("rep_replace_good_id"),
@@ -34,6 +37,27 @@ public class ReplacesDBAccess extends DBAccess{
         } catch (Exception e) {
             System.out.println(this.getClass().toString() + " problem: "+e.toString());
         }
+        return list;
+    }
+    
+    public ArrayList<Replaces> getReplacesOf(Goods good) throws SQLException{
+        ArrayList<Replaces> list = new ArrayList<>();
+        Connection connection = getConnect();
+        Statement statement = connection.createStatement();
+        String id = good.getId().toString();
+        System.out.println(id);
+        String query = "Select rep_good_id, g1.goods_name name1, rep_replace_good_id, g2.goods_name name2 "
+                + "from replaces "
+                + "left join goods g1 on g1.goods_id = replaces.rep_good_id "
+                + "left join goods g2 on g2.goods_id = replaces.rep_replace_good_id "
+                + "where rep_good_id="+id
+                + " or rep_replace_good_id="+id;
+        ResultSet set = statement.executeQuery(query);
+        while(set.next()){
+            list.add(new Replaces(set.getInt("rep_good_id"), set.getInt("rep_replace_good_id"),
+            set.getString("name1"), set.getString("name2")));
+        }
+        connection.close();
         return list;
     }
     

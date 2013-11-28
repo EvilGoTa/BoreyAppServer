@@ -16,6 +16,7 @@ import java.sql.PreparedStatement;
  * @author Роман
  */
 public class InvoiceDBAccess extends DBAccess{
+   
     public ArrayList<Invoice> getInvoice() {
         ArrayList<Invoice> list = new ArrayList<>();
         try {
@@ -28,6 +29,26 @@ public class InvoiceDBAccess extends DBAccess{
             while(set.next()){
                 list.add(new Invoice(set.getInt("inv_id"), set.getString("inv_creation_date"), 
                         set.getInt("inv_firm_id"), set.getString("firm_name")));
+            }
+            connection.close();
+        } catch (Exception e) {
+            System.out.println(this.getClass().toString() + " problem: "+e.toString());
+        }
+        return list;
+    }
+    
+    public ArrayList<Invoice> getInvoicesWitNoPO(){
+        ArrayList<Invoice> list = new ArrayList<>();
+        try {
+            Connection connection = getConnect();
+            Statement statement = connection.createStatement();
+            String query = "select inv_creatipn_date, firm_name, inv_id, firm_id "
+                    + "from invoice "
+                    + "left join firm on firm_id=inv_firm_id "
+                    + "where inv_id not in (select distinct po_invoice_id from payment_order";
+            ResultSet set = statement.executeQuery(query);
+            while(set.next()){
+                list.add(new Invoice(set.getInt("inv_id"), set.getString("inv_creation_date"), set.getInt("firm_id"), set.getString("firm_name")));
             }
             connection.close();
         } catch (Exception e) {

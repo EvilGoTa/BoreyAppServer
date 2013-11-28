@@ -149,14 +149,6 @@ public class BookKeeperForm extends javax.swing.JFrame {
         jButtonBankEdit = new javax.swing.JButton();
         jButtonBankDel = new javax.swing.JButton();
         jButtonBankRefresh = new javax.swing.JButton();
-        jPanelPO = new javax.swing.JPanel();
-        jLabel19 = new javax.swing.JLabel();
-        jComboBoxPOAcc = new javax.swing.JComboBox();
-        jLabel20 = new javax.swing.JLabel();
-        jComboBoxPOInv = new javax.swing.JComboBox();
-        jButtonPOAdd = new javax.swing.JButton();
-        jButtonPODel = new javax.swing.JButton();
-        jButtonPORefresh = new javax.swing.JButton();
         jPanelExchangeRate = new javax.swing.JPanel();
         jComboBoxExRateCurr2 = new javax.swing.JComboBox();
         jButtonExRateAdd = new javax.swing.JButton();
@@ -180,6 +172,14 @@ public class BookKeeperForm extends javax.swing.JFrame {
         jButtonCurrEdit = new javax.swing.JButton();
         jButtonCurrDel = new javax.swing.JButton();
         jLabelCurrError = new javax.swing.JLabel();
+        jPanelPO = new javax.swing.JPanel();
+        jLabel19 = new javax.swing.JLabel();
+        jComboBoxPOAcc = new javax.swing.JComboBox();
+        jLabel20 = new javax.swing.JLabel();
+        jComboBoxPOInv = new javax.swing.JComboBox();
+        jButtonPOAdd = new javax.swing.JButton();
+        jButtonPODel = new javax.swing.JButton();
+        jButtonPORefresh = new javax.swing.JButton();
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -535,60 +535,6 @@ public class BookKeeperForm extends javax.swing.JFrame {
 
         jTabbedPane3.addTab("Банки", jPanelBank);
 
-        jLabel19.setText("Счет");
-
-        jLabel20.setText("Накладная");
-
-        jButtonPOAdd.setText("Оплачено");
-
-        jButtonPODel.setText("Удалить");
-        jButtonPODel.setToolTipText("");
-
-        jButtonPORefresh.setText("Обновить");
-
-        javax.swing.GroupLayout jPanelPOLayout = new javax.swing.GroupLayout(jPanelPO);
-        jPanelPO.setLayout(jPanelPOLayout);
-        jPanelPOLayout.setHorizontalGroup(
-            jPanelPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelPOLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanelPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanelPOLayout.createSequentialGroup()
-                        .addGroup(jPanelPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel20)
-                            .addComponent(jLabel19))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanelPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jComboBoxPOAcc, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jComboBoxPOInv, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanelPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(jButtonPORefresh, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
-                        .addComponent(jButtonPODel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButtonPOAdd, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(192, Short.MAX_VALUE))
-        );
-        jPanelPOLayout.setVerticalGroup(
-            jPanelPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelPOLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanelPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel19)
-                    .addComponent(jComboBoxPOAcc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanelPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel20)
-                    .addComponent(jComboBoxPOInv, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jButtonPOAdd)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButtonPODel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButtonPORefresh)
-                .addContainerGap(216, Short.MAX_VALUE))
-        );
-
-        jTabbedPane3.addTab("Вх.Платежные поручения", jPanelPO);
-
         jPanelExchangeRate.addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
                 jPanelExchangeRateComponentShown(evt);
@@ -777,6 +723,60 @@ public class BookKeeperForm extends javax.swing.JFrame {
         );
 
         jTabbedPane3.addTab("Валюты", jPanelCurrency);
+
+        jLabel19.setText("Счет");
+
+        jLabel20.setText("Накладная");
+
+        jButtonPOAdd.setText("Оплачено");
+
+        jButtonPODel.setText("Удалить");
+        jButtonPODel.setToolTipText("");
+
+        jButtonPORefresh.setText("Обновить");
+
+        javax.swing.GroupLayout jPanelPOLayout = new javax.swing.GroupLayout(jPanelPO);
+        jPanelPO.setLayout(jPanelPOLayout);
+        jPanelPOLayout.setHorizontalGroup(
+            jPanelPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelPOLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanelPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelPOLayout.createSequentialGroup()
+                        .addGroup(jPanelPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel20)
+                            .addComponent(jLabel19))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanelPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jComboBoxPOAcc, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jComboBoxPOInv, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanelPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jButtonPODel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonPOAdd, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE))
+                    .addComponent(jButtonPORefresh, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(192, Short.MAX_VALUE))
+        );
+        jPanelPOLayout.setVerticalGroup(
+            jPanelPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelPOLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanelPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel19)
+                    .addComponent(jComboBoxPOAcc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanelPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel20)
+                    .addComponent(jComboBoxPOInv, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(26, 26, 26)
+                .addComponent(jButtonPORefresh)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonPOAdd)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonPODel)
+                .addContainerGap(218, Short.MAX_VALUE))
+        );
+
+        jTabbedPane3.addTab("Вх.Платежные поручения", jPanelPO);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -1095,7 +1095,13 @@ public class BookKeeperForm extends javax.swing.JFrame {
     private void jButtonBankAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBankAddActionPerformed
         Bank newBank = new Bank();
         try{
-            newBank.setName(jTextBankName.getText());
+            try{
+                newBank.setName(jTextBankName.getText());
+                if (newBank.getName().isEmpty()) throw new Exception();
+            }
+                catch(Exception e){
+                    System.out.println("Ололо");
+            }
             newBank.setAddress(jTextBankAdress.getText());
             newBank.setLocation(jTextBankCountry.getText());
             newBank.setLicense_num(new Integer(jTextBankLicense.getText()));

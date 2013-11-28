@@ -76,8 +76,14 @@
   </Layout>
   <SubComponents>
     <Component class="javax.swing.JTextField" name="jTextLogin">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="GoodsKeeper"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JPasswordField" name="jPassword">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="gk12345"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>

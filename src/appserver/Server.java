@@ -18,6 +18,7 @@ import entities.Goods;
 import entities.Replaces;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 
@@ -221,5 +222,10 @@ public class Server extends UnicastRemoteObject implements ServerIntf{
     public int delReplaces(Replaces repl) throws RemoteException {
         ReplacesDBAccess nya = new ReplacesDBAccess();
         return nya.delReplaces(repl);
+    }
+
+    public ArrayList<Replaces> getReplacesOf(Goods good) throws RemoteException, SQLException {
+        ReplacesDBAccess nya = new ReplacesDBAccess();
+        return nya.getReplacesOf(good);
     }
 }

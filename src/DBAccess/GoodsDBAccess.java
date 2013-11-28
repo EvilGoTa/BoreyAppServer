@@ -49,7 +49,7 @@ public class GoodsDBAccess extends DBAccess{
             prep.setString(4, goods.getTara());
             prep.setString(5, goods.getFirm_name());
             prep.setInt(6, goods.getCount());
-            prep.setInt(7, goods.getCount());
+            prep.setInt(7, goods.getPrice());
             prep.executeUpdate();
             connection.close();
             return 1;

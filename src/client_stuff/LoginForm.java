@@ -29,6 +29,10 @@ public class LoginForm extends JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
+        jTextLogin.setText("GoodsKeeper");
+
+        jPassword.setText("gk12345");
+
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel1.setText("Логин");
 

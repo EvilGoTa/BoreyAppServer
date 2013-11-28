@@ -10,6 +10,7 @@ import entities.Goods;
 import entities.Replaces;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public interface ServerIntf extends Remote{
@@ -47,4 +48,5 @@ public interface ServerIntf extends Remote{
     public ArrayList<Replaces> replacesRefresh() throws RemoteException;
     public int addReplaces(Replaces repl) throws RemoteException;
     public int delReplaces(Replaces repl) throws RemoteException;
+    public ArrayList<Replaces> getReplacesOf(Goods good) throws RemoteException, SQLException;
 }

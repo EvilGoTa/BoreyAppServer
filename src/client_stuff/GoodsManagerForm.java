@@ -34,11 +34,21 @@ public class GoodsManagerForm extends javax.swing.JFrame {
                     jTextPrise.setText(goods.get(selected).getPrice().toString());
                     jTextQuantity.setText(goods.get(selected).getCount().toString());
                     
-                    //TODO Replaces
+                    getReplaceOf(goods.get(selected));
+                    jTableReplaces.setModel(new ReplacesTableModel(repl));
                     
                 }
             }
         });
+    }
+    
+    public void getReplaceOf(Goods good){
+        try{
+            repl = client.getReplaceOf(good);
+        }
+        catch(Exception e){
+            System.out.println("getReplaseOf: "+e);
+        }
     }
     
     public void refresh() throws RemoteException{
@@ -53,7 +63,7 @@ public class GoodsManagerForm extends javax.swing.JFrame {
         jTableGoods.getColumnModel().getColumn(5).setPreferredWidth(50);
         jTableGoods.getColumnModel().getColumn(6).setPreferredWidth(50);
         repl = client.replacesRefresh();
-        jTable1.setModel(new ReplacesTableModel(repl));
+        jTableReplaces.setModel(new ReplacesTableModel(repl));
     }
 
     @SuppressWarnings("unchecked")
@@ -80,7 +90,7 @@ public class GoodsManagerForm extends javax.swing.JFrame {
         jTextPrise = new javax.swing.JTextField();
         jLabelMessage = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jTableReplaces = new javax.swing.JTable();
         jButtonAddReplaces = new javax.swing.JButton();
         jButtonDelReplaces = new javax.swing.JButton();
 
@@ -136,7 +146,7 @@ public class GoodsManagerForm extends javax.swing.JFrame {
         jLabelMessage.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabelMessage.setText("NYa");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jTableReplaces.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -147,7 +157,7 @@ public class GoodsManagerForm extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(jTableReplaces);
 
         jButtonAddReplaces.setText("Добавить замену");
 
@@ -267,14 +277,14 @@ public class GoodsManagerForm extends javax.swing.JFrame {
             newGood.setPrice(Integer.parseInt(jTextPrise.getText()));
             newGood.setCount(Integer.parseInt(jTextQuantity.getText()));
             
-            //TODO Убрать потом
-            int max=0;
-            for (int i=0; i<goods.size();i++){
-                if (goods.get(i).getId()>max){
-                max=goods.get(i).getId();
-                }
-            }
-            newGood.setId(max+1);
+//            TODO Убрать потом
+//            int max=0;
+//            for (int i=0; i<goods.size();i++){
+//                if (goods.get(i).getId()>max){
+//                max=goods.get(i).getId();
+//                }
+//            }
+//            newGood.setId(max+1);
             
             
             if(client.addGoods(newGood)==1){
@@ -348,8 +358,8 @@ public class GoodsManagerForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelMessage;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTable jTableGoods;
+    private javax.swing.JTable jTableReplaces;
     private javax.swing.JTextField jTextClass;
     private javax.swing.JTextField jTextFirm;
     private javax.swing.JTextField jTextName;
