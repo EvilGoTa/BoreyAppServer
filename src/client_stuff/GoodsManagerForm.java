@@ -16,6 +16,7 @@ public class GoodsManagerForm extends javax.swing.JFrame {
     ArrayList<Goods> goods = null;
     ArrayList<Replaces> repl = null;
     int selected=-2;
+    int repSelected=-2;
         
     public GoodsManagerForm(Client client) throws RemoteException {
         initComponents();
@@ -41,6 +42,14 @@ public class GoodsManagerForm extends javax.swing.JFrame {
                 }
             }
         });
+        jTableReplaces.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                repSelected = jTableReplaces.getSelectedRow();
+            }
+        });
+        
     }
     
     public void getReplaceOf(Goods good){
@@ -75,6 +84,18 @@ public class GoodsManagerForm extends javax.swing.JFrame {
 
     public void addReplace(Replaces repl){
         this.setVisible(true);
+        try{
+            client.addReplaces(repl);
+            refreshGoods();
+        }
+        catch(SQLException e){
+            System.out.println("AddRep: "+e);
+            jLabelMessage.setText("SQL ошибка добавления");
+        }
+        catch(Exception e){
+            System.out.println("AddRep: "+e);
+            jLabelMessage.setText("Ошибка добавления");            
+        }
     }
     
     @SuppressWarnings("unchecked")
@@ -178,6 +199,11 @@ public class GoodsManagerForm extends javax.swing.JFrame {
         });
 
         jButtonDelReplaces.setText("Удалить замену");
+        jButtonDelReplaces.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonDelReplacesActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -364,6 +390,26 @@ public class GoodsManagerForm extends javax.swing.JFrame {
         this.setVisible(false);
         addDialog.setVisible(true);
     }//GEN-LAST:event_jButtonAddReplacesActionPerformed
+
+    private void jButtonDelReplacesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDelReplacesActionPerformed
+        try{
+            if (repSelected>=0){
+                client.delReplaces(repl.get(repSelected));
+                refreshGoods();
+            }
+            else{
+                jLabelMessage.setText("Ошбибка удаления. Не выбрана запись.");
+            }
+        }
+        catch(SQLException e){
+            jLabelMessage.setText("SQL ошбибка удаления");
+            System.out.println("DelRElpace: "+e);
+        }
+        catch(Exception e){
+            jLabelMessage.setText("Ошбибка удаления");
+            System.out.println("DelRElpace: "+e);
+        }
+    }//GEN-LAST:event_jButtonDelReplacesActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAddReplaces;

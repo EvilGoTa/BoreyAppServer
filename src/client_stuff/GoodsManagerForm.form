@@ -278,6 +278,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="&#x423;&#x434;&#x430;&#x43b;&#x438;&#x442;&#x44c; &#x437;&#x430;&#x43c;&#x435;&#x43d;&#x443;"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonDelReplacesActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>
