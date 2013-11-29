@@ -66,6 +66,10 @@ public class GoodsManagerForm extends javax.swing.JFrame {
         jTableReplaces.setModel(new ReplacesTableModel(repl));
     }
 
+    public void addReplace(Replaces repl){
+        this.setVisible(true);
+    }
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -160,6 +164,11 @@ public class GoodsManagerForm extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTableReplaces);
 
         jButtonAddReplaces.setText("Добавить замену");
+        jButtonAddReplaces.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAddReplacesActionPerformed(evt);
+            }
+        });
 
         jButtonDelReplaces.setText("Удалить замену");
 
@@ -341,6 +350,12 @@ public class GoodsManagerForm extends javax.swing.JFrame {
             this.jLabelMessage.setText("Удаление: ошибка.");            
         }
     }//GEN-LAST:event_jButtonGoodsDelActionPerformed
+
+    private void jButtonAddReplacesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddReplacesActionPerformed
+        GoodsKeeperAddReplaceDialog addDialog = new GoodsKeeperAddReplaceDialog(this, rootPaneCheckingEnabled, this, goods);
+        this.setVisible(false);
+        addDialog.setVisible(true);
+    }//GEN-LAST:event_jButtonAddReplacesActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAddReplaces;

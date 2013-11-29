@@ -31,7 +31,7 @@ public class Client extends UnicastRemoteObject{
         log = new LoginForm(this);
     }
     
-    public int tryConnect(String IP, String login, String pass) throws NotBoundException, MalformedURLException, RemoteException{
+    public int tryConnect(String IP, String login, String pass) throws NotBoundException, MalformedURLException, RemoteException, SQLException{
         String serverIP = "rmi://"+IP+"/RMIServer";
         try{
             server = (ServerIntf) Naming.lookup(serverIP);
@@ -69,108 +69,108 @@ public class Client extends UnicastRemoteObject{
         return 1;
     }
     
-    public ArrayList<Currency> refreshCurrency() throws RemoteException{
+    public ArrayList<Currency> refreshCurrency() throws RemoteException, SQLException{
         return server.refreshCurrency();
     }
     
-    public ArrayList<Goods> refreshGoods() throws RemoteException{
+    public ArrayList<Goods> refreshGoods() throws RemoteException, SQLException{
         return server.refreshGoods();
     }
     
-    public int addGoods(Goods good) throws RemoteException{
-        return server.addGoods(good);
+    public void addGoods(Goods good) throws RemoteException, SQLException{
+        server.addGoods(good);
     }
     
-    public int editGoods(Goods good) throws RemoteException{
-        return server.editGoods(good);
+    public void editGoods(Goods good) throws RemoteException, SQLException{
+        server.editGoods(good);
     }
     
-    public int delGoods(Goods good) throws RemoteException{
-        return server.delGoods(good);
+    public void delGoods(Goods good) throws RemoteException, SQLException{
+        server.delGoods(good);
     }
     
-    public int addCurrency(Currency curr) throws RemoteException{
-        return server.addCurrency(curr);
+    public void addCurrency(Currency curr) throws RemoteException, SQLException{
+        server.addCurrency(curr);
     }
     
-    public int editCurrency(Currency curr) throws RemoteException{
-        return server.editCurrency(curr);
+    public void editCurrency(Currency curr) throws RemoteException, SQLException{
+        server.editCurrency(curr);
     }
     
-    public int delCurrency(Currency curr) throws RemoteException{
-        return server.delCurrency(curr);
+    public void delCurrency(Currency curr) throws RemoteException, SQLException{
+        server.delCurrency(curr);
     }
     
-    public ArrayList<ExchangeRate> exRateRefresh() throws RemoteException{
+    public ArrayList<ExchangeRate> exRateRefresh() throws RemoteException, SQLException{
         return server.exRateRefresh();
     }
     
-    public int addExRate(ExchangeRate exRate) throws RemoteException{
-        return server.addExRate(exRate);
+    public void addExRate(ExchangeRate exRate) throws RemoteException, SQLException{
+        server.addExRate(exRate);
     }
     
-    public int delExRate(ExchangeRate exRate) throws RemoteException{
-        return server.delExRate(exRate);
+    public void delExRate(ExchangeRate exRate) throws RemoteException, SQLException{
+        server.delExRate(exRate);
     }
     
-    public ArrayList<Bank> bankRefresh() throws RemoteException{
+    public ArrayList<Bank> bankRefresh() throws RemoteException, SQLException{
         return server.bankRefresh();
     }
     
-    public int addBank(Bank bank) throws RemoteException{
-        return server.addBank(bank);
+    public void addBank(Bank bank) throws RemoteException, SQLException{
+        server.addBank(bank);
     }
     
-    public int delBank(Bank bank) throws RemoteException{
-        return server.delBank(bank);
+    public void delBank(Bank bank) throws RemoteException, SQLException{
+        server.delBank(bank);
     }
     
-    public int editBank(Bank bank) throws RemoteException{
-        return server.editBank(bank);
+    public void editBank(Bank bank) throws RemoteException, SQLException{
+        server.editBank(bank);
     }
     
-    public ArrayList<Firm> firmRefresh() throws RemoteException{
+    public ArrayList<Firm> firmRefresh() throws RemoteException, SQLException{
         return server.firmRefresh();
     }
     
-    public int addFirm(Firm firm) throws RemoteException{
-        return server.addFirm(firm);
+    public void addFirm(Firm firm) throws RemoteException, SQLException{
+        server.addFirm(firm);
     }
     
-    public int editFirm(Firm firm) throws RemoteException{
-        return server.editFirm(firm);
+    public void editFirm(Firm firm) throws RemoteException, SQLException{
+        server.editFirm(firm);
     }
     
-    public int delFirm(Firm firm) throws RemoteException{
-        return server.delFirm(firm);
+    public void delFirm(Firm firm) throws RemoteException, SQLException{
+        server.delFirm(firm);
     }
     
-    public ArrayList<Account> accRefresh() throws RemoteException{
+    public ArrayList<Account> accRefresh() throws RemoteException, SQLException{
         return server.accRefresh();
     }
     
-    public int addAccount(Account acc) throws RemoteException{
-        return server.addAccount(acc);
+    public void addAccount(Account acc) throws RemoteException, SQLException{
+        server.addAccount(acc);
     }
     
-    public int editAccount(Account acc) throws RemoteException{
-        return server.editAccount(acc);
+    public void editAccount(Account acc) throws RemoteException, SQLException{
+        server.editAccount(acc);
     }
     
-    public int delAccount(Account acc) throws RemoteException{
-        return server.delAccount(acc);
+    public void delAccount(Account acc) throws RemoteException, SQLException{
+        server.delAccount(acc);
     }
     
-    public ArrayList<Replaces> replacesRefresh() throws RemoteException{
+    public ArrayList<Replaces> replacesRefresh() throws RemoteException, SQLException{
         return server.replacesRefresh();
     }
     
-    public int addReplaces(Replaces repl) throws RemoteException{
-        return server.addReplaces(repl);
+    public void addReplaces(Replaces repl) throws RemoteException, SQLException{
+        server.addReplaces(repl);
     }
     
-    public int delReplaces(Replaces repl) throws RemoteException{
-        return server.delReplaces(repl);
+    public void delReplaces(Replaces repl) throws RemoteException, SQLException{
+        server.delReplaces(repl);
     }
     
     public ArrayList<Replaces> getReplaceOf(Goods good) throws RemoteException, SQLException{

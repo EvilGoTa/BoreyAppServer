@@ -26,202 +26,139 @@ public class Server extends UnicastRemoteObject implements ServerIntf{
     
     public Server() throws RemoteException{}
 
-    @Override
-    public int login (String login, String pass) throws RemoteException{
+    public int login (String login, String pass) throws RemoteException, SQLException{
         UsersDBAccess nya = new UsersDBAccess();
         return nya.login(login, pass);
     }
     
-    @Override
-    public ArrayList<Goods> refreshGoods() throws RemoteException {
+    public ArrayList<Goods> refreshGoods() throws RemoteException, SQLException {
         GoodsDBAccess good = new GoodsDBAccess();
         return good.getGods();
     }
 
-    @Override
-    public int addGoods(Goods good) throws RemoteException {
+    public void addGoods(Goods good) throws RemoteException, SQLException {
         GoodsDBAccess nya = new GoodsDBAccess();
-        try{
-            return nya.addGoods(good);
-        }
-        catch(Exception e){
-            System.out.println("AddGoods :"+e);
-            return 0;
-        }
+        nya.addGoods(good);
     }
 
-    @Override
-    public int editGoods(Goods good) throws RemoteException {
+    public void editGoods(Goods good) throws RemoteException, SQLException {
         GoodsDBAccess nya = new GoodsDBAccess();
-        try{
-            return nya.editGoods(good);
-        }
-        catch(Exception e){
-            System.out.println("EditGoods :"+e);
-            return 0;
-        }
+        nya.editGoods(good);
     }
 
-    @Override
-    public int delGoods(Goods good) throws RemoteException {
+    public void delGoods(Goods good) throws RemoteException, SQLException {
         GoodsDBAccess nya = new GoodsDBAccess();
-        try{
-            return nya.delGoods(good);
-        }
-        catch(Exception e){
-            System.out.println("DeleteGoods :"+e);
-            return 0;
-        }
+        nya.delGoods(good);
     }
 
-    @Override
-    public ArrayList<Currency> refreshCurrency() throws RemoteException {
+    public ArrayList<Currency> refreshCurrency() throws RemoteException, SQLException {
         CurrencyDBAccess curr = new CurrencyDBAccess();
         return curr.getCurrency();
     }
 
-    @Override
-    public int addCurrency(Currency curr) throws RemoteException {
+    public void addCurrency(Currency curr) throws RemoteException, SQLException {
         CurrencyDBAccess nya = new CurrencyDBAccess();
-        try{
-            return nya.addCurrency(curr);
-        }
-        catch(Exception e){
-            System.out.println("AddCurrency :"+e);
-            return 0;
-        }
+        nya.addCurrency(curr);
     }
 
-    @Override
-    public int editCurrency(Currency curr) throws RemoteException {
+    public void editCurrency(Currency curr) throws RemoteException, SQLException {
         CurrencyDBAccess nya = new CurrencyDBAccess();
-        try{
-            return nya.editCurrency(curr);
-        }
-        catch(Exception e){
-            System.out.println("EditCurrency :"+e);
-            return 0;
-        }
+        nya.editCurrency(curr);
     }
 
-    @Override
-    public int delCurrency(Currency curr) throws RemoteException {
+    public void delCurrency(Currency curr) throws RemoteException, SQLException {
         CurrencyDBAccess nya = new CurrencyDBAccess();
-        try{
-            return nya.delCurrency(curr);
-        }
-        catch(Exception e){
-            System.out.println("DelCurrency :"+e);
-            return 0;
-        }
+        nya.delCurrency(curr);
     }
 
-    @Override
-    public ArrayList<ExchangeRate> exRateRefresh() throws RemoteException{
+    public ArrayList<ExchangeRate> exRateRefresh() throws RemoteException, SQLException{
         ExRateDBAccess exRate = new ExRateDBAccess();
         return exRate.getExRate();
     }
 
-    @Override
-    public int addExRate(ExchangeRate exRate) throws RemoteException {
+    public void addExRate(ExchangeRate exRate) throws RemoteException, SQLException {
         ExRateDBAccess exRateAcc = new ExRateDBAccess();
-        return exRateAcc.addExRate(exRate);
+        exRateAcc.addExRate(exRate);
     }
 
-    @Override
-    public int delExRate(ExchangeRate exRate) throws RemoteException {
+    public void delExRate(ExchangeRate exRate) throws RemoteException, SQLException {
         ExRateDBAccess exRateAcc = new ExRateDBAccess();
-        return exRateAcc.delExRate(exRate);
+        exRateAcc.delExRate(exRate);
     }
 
-    @Override
-    public ArrayList<Bank> bankRefresh() throws RemoteException {
+    public ArrayList<Bank> bankRefresh() throws RemoteException, SQLException {
         BankDBAccess nya = new BankDBAccess();
         return nya.getBank();
     }
 
-    @Override
-    public int addBank(Bank bank) throws RemoteException {
+    public void addBank(Bank bank) throws RemoteException, SQLException {
         BankDBAccess nya = new BankDBAccess();
-        return nya.addBank(bank);
+        nya.addBank(bank);
     }
 
-    @Override
-    public int editBank(Bank bank) throws RemoteException {
+    public void editBank(Bank bank) throws RemoteException, SQLException {
         BankDBAccess nya = new BankDBAccess();
-        return nya.editBank(bank);
+        nya.editBank(bank);
     }
 
-    @Override
-    public int delBank(Bank bank) throws RemoteException {
+    public void delBank(Bank bank) throws RemoteException, SQLException {
         BankDBAccess nya = new BankDBAccess();
-        return nya.delBank(bank);
+        nya.delBank(bank);
     }
 
-    @Override
-    public ArrayList<Firm> firmRefresh() throws RemoteException {
+    public ArrayList<Firm> firmRefresh() throws RemoteException, SQLException {
         FirmDBAccess nya = new FirmDBAccess();
         return nya.getFirm();
     }
 
-    @Override
-    public int addFirm(Firm firm) throws RemoteException {
+    public void addFirm(Firm firm) throws RemoteException, SQLException {
         FirmDBAccess nya = new FirmDBAccess();
-        return nya.addFirm(firm);
+        nya.addFirm(firm);
     }
 
-    @Override
-    public int editFirm(Firm firm) throws RemoteException {
+    public void editFirm(Firm firm) throws RemoteException, SQLException {
         FirmDBAccess nya = new FirmDBAccess();
-        return nya.editFirm(firm);
+        nya.editFirm(firm);
     }
 
-    @Override
-    public int delFirm(Firm firm) throws RemoteException {
+    public void delFirm(Firm firm) throws RemoteException, SQLException {
         FirmDBAccess nya = new FirmDBAccess();
-        return nya.delFirm(firm);
+        nya.delFirm(firm);
     }
 
-    @Override
-    public ArrayList<Account> accRefresh() throws RemoteException {
+    public ArrayList<Account> accRefresh() throws RemoteException, SQLException {
         AccountDBAccess nya = new AccountDBAccess();
         return nya.getAccounts();
     }
 
-    @Override
-    public int addAccount(Account acc) throws RemoteException {
+    public void addAccount(Account acc) throws RemoteException, SQLException {
         AccountDBAccess nya = new AccountDBAccess();
-        return nya.addAccount(acc);
+        nya.addAccount(acc);
     }
 
-    @Override
-    public int editAccount(Account acc) throws RemoteException {
+    public void editAccount(Account acc) throws RemoteException, SQLException {
         AccountDBAccess nya = new AccountDBAccess();
-        return nya.editAccount(acc);
+        nya.editAccount(acc);
     }
 
-    @Override
-    public int delAccount(Account acc) throws RemoteException {
+    public void delAccount(Account acc) throws RemoteException, SQLException {
         AccountDBAccess nya = new AccountDBAccess();
-        return nya.deleteAccount(acc);
+        nya.deleteAccount(acc);
     }
 
-    @Override
-    public ArrayList<Replaces> replacesRefresh() throws RemoteException {
+    public ArrayList<Replaces> replacesRefresh() throws RemoteException, SQLException {
         ReplacesDBAccess nya = new ReplacesDBAccess();
         return nya.getReplaces();
     }
 
-    @Override
-    public int addReplaces(Replaces repl) throws RemoteException {
+    public void addReplaces(Replaces repl) throws RemoteException, SQLException {
         ReplacesDBAccess nya = new ReplacesDBAccess();
-        return nya.addReplaces(repl);
+        nya.addReplaces(repl);
     }
 
-    @Override
-    public int delReplaces(Replaces repl) throws RemoteException {
+    public void delReplaces(Replaces repl) throws RemoteException, SQLException {
         ReplacesDBAccess nya = new ReplacesDBAccess();
-        return nya.delReplaces(repl);
+        nya.delReplaces(repl);
     }
 
     public ArrayList<Replaces> getReplacesOf(Goods good) throws RemoteException, SQLException {
