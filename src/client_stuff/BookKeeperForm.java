@@ -7,6 +7,7 @@ import entities.Currency;
 import entities.ExchangeRate;
 import entities.Firm;
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class BookKeeperForm extends javax.swing.JFrame {
         this.client = client;
     }
     
-    public void currRefresh() throws RemoteException{
+    public void currRefresh() throws RemoteException, SQLException{
         currency = client.refreshCurrency();
         jTable1.setModel(new CurrencyTableModel(currency));
         jTable1.getColumnModel().getColumn(0).setPreferredWidth(10);
@@ -47,7 +48,7 @@ public class BookKeeperForm extends javax.swing.JFrame {
         jTable1.getColumnModel().getColumn(3).setPreferredWidth(100);
     }
     
-    public void exRateRefresh() throws RemoteException{
+    public void exRateRefresh() throws RemoteException, SQLException{
         exRate = client.exRateRefresh();
         jTable1.setModel(new ExRateTableModel(exRate));
         jTable1.getColumnModel().getColumn(0).setPreferredWidth(10);
@@ -62,17 +63,17 @@ public class BookKeeperForm extends javax.swing.JFrame {
         }
     }
     
-    public void bankRefresh() throws RemoteException{
+    public void bankRefresh() throws RemoteException, SQLException{
         bank = client.bankRefresh();
         jTable1.setModel(new BankTableModel(bank));
     }
     
-    public void firmRefresh() throws RemoteException{
+    public void firmRefresh() throws RemoteException, SQLException{
         firm = client.firmRefresh();
         jTable1.setModel(new FirmTableModel(firm));
     }
     
-    public void accRefresh() throws RemoteException{
+    public void accRefresh() throws RemoteException, SQLException{
         selected = -1;
         acc = client.accRefresh();
         jTable1.setModel(new AccountTableModel(acc));
@@ -823,7 +824,15 @@ public class BookKeeperForm extends javax.swing.JFrame {
                     }
                 }
             });
-        } catch (RemoteException ex) {}
+        }
+        catch(SQLException e){
+            jLabelCurrError.setText("SQL ошибка обновления");
+            System.out.println("BK_Curr_show: "+e);
+        }
+        catch (Exception e){
+            System.out.println("BK_Curr_show: "+e);
+            jLabelCurrError.setText("Ошибка обновления");
+        }
     }//GEN-LAST:event_jPanelCurrencyComponentShown
 
     private void jButtonCurrDelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCurrDelActionPerformed
@@ -833,15 +842,18 @@ public class BookKeeperForm extends javax.swing.JFrame {
                     jLabelCurrError.setText("Нельзя удалить рубли");
                 }
                 else{
-                    if (client.delCurrency(currency.get(selected))==1){
-                        jLabelCurrError.setText("Удаление OK");
-                        currRefresh();
-                    }
-                    else{
-                        jLabelCurrError.setText("Удаление Error");
-                    }
+                    client.delCurrency(currency.get(selected));
+                    jLabelCurrError.setText("Удаление OK");
+                    currRefresh();
                 }
             }
+            else{
+                jLabelCurrError.setText("Удаление ошибка. Не выбрана запись.");
+            }
+        }
+        catch(SQLException e){
+            jLabelCurrError.setText("Удаление SQL ошибка");
+            System.out.println("BK_delCurr: "+e);
         }
         catch(Exception e){
             System.out.println("Error:="+e);
@@ -856,13 +868,13 @@ public class BookKeeperForm extends javax.swing.JFrame {
             edCurr.setCountry(jTextCurrCountry.getText());
             edCurr.setDesc(jTextCurrDescr.getText());
             edCurr.setId(currency.get(selected).getId());
-            if (client.editCurrency(edCurr)==1){
-                jLabelCurrError.setText("Редактирование OK");
-                currRefresh();
-            }
-            else{
-                jLabelCurrError.setText("Редактирование Error");
-            }
+            client.editCurrency(edCurr);
+            jLabelCurrError.setText("Редактирование OK");
+            currRefresh();
+        }
+        catch(SQLException e){
+            jLabelCurrError.setText("Редактирование Error");
+            System.out.println("BK_editCurr: "+e);
         }
         catch(Exception e){
             System.out.println("Error:="+e);
@@ -873,7 +885,15 @@ public class BookKeeperForm extends javax.swing.JFrame {
     private void jButtonCurrRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCurrRefreshActionPerformed
         try {
             currRefresh();
-        } catch (RemoteException ex) {}
+        }
+        catch(SQLException e){
+            jLabelCurrError.setText("SQL ошибка обновления");
+            System.out.println("BK_Curr_refresh: "+e);
+        }
+        catch (Exception e){
+            System.out.println("BK_Curr_refresh: "+e);
+            jLabelCurrError.setText("Ошибка обновления");
+        }
     }//GEN-LAST:event_jButtonCurrRefreshActionPerformed
 
     private void jButtonCurrAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCurrAddActionPerformed
@@ -882,29 +902,34 @@ public class BookKeeperForm extends javax.swing.JFrame {
             newCurr.setName(jTextCurrName.getText());
             newCurr.setCountry(jTextCurrCountry.getText());
             newCurr.setDesc(jTextCurrDescr.getText());
-            if (currency.isEmpty()){
-                newCurr.setId(0);
-            }
-            else{
-                int max=0;
-                for (int i=0; i<currency.size();i++){
-                    if (currency.get(i).getId()>max){
-                        max=currency.get(i).getId();
-                    }
-                }
-                newCurr.setId(max+1);
-            }
+            
+//            TODO удалить после добавления триггера
+//            if (currency.isEmpty()){
+//                newCurr.setId(0);
+//            }
+//            else{
+//                int max=0;
+//                for (int i=0; i<currency.size();i++){
+//                    if (currency.get(i).getId()>max){
+//                        max=currency.get(i).getId();
+//                    }
+//                }
+//                newCurr.setId(max+1);
+//            }
 
-            if(client.addCurrency(newCurr)==1){
+            client.addCurrency(newCurr);
                 jLabelCurrError.setText("Добавление OK");
                 currRefresh();
-            }
-            else{
-                jLabelCurrError.setText("Добавление Error");
-            }
+                
+            
+        }
+        catch(SQLException e){
+            jLabelCurrError.setText("Добавление SQL ошибка");
+            System.out.println("BK_AddCur: "+e);
         }
         catch(Exception e){
             this.jLabelCurrError.setText("Добавление: ошибка. Проверьте исходные даные.");
+            System.out.println("BK_AddCur: "+e);
         }
     }//GEN-LAST:event_jButtonCurrAddActionPerformed
 
@@ -942,22 +967,31 @@ public class BookKeeperForm extends javax.swing.JFrame {
                     }
                 }
             });
-        } catch (RemoteException ex) {
-            System.out.println("ExRate_show: "+ex);
+        }
+        catch (SQLException e){
+            System.out.println("ExRate_show: "+e);
+            jLabelExRateError.setText("Ошибка SQL обновления");
+        }
+        catch(Exception e){
+            System.out.println("ExRate_show: "+e);
+            jLabelExRateError.setText("Ошибка SQL обновления");
         }
     }//GEN-LAST:event_jPanelExchangeRateComponentShown
 
     private void jButtonExRateDelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExRateDelActionPerformed
         try{
             if (selected>=0){
-                if (client.delExRate(exRate.get(selected))==1){
-                    jLabelExRateError.setText("Удаление OK");
-                    exRateRefresh();
-                }
-                else{
-                    jLabelExRateError.setText("Удаление Error");
-                }
+                client.delExRate(exRate.get(selected));
+                jLabelExRateError.setText("Удаление OK");
+                exRateRefresh();
             }
+            else{
+                 jLabelExRateError.setText("Удаление ошибка. Не выбрана запись.");
+            }
+        }
+        catch(SQLException e){
+            jLabelExRateError.setText("Удаление SQL ошибка");
+            System.out.println("ExRate_del: "+e);
         }
         catch(Exception e){
             System.out.println("Error:="+e);
@@ -980,28 +1014,27 @@ public class BookKeeperForm extends javax.swing.JFrame {
             newRate.setRatio(rate);
             newRate.setDate(new SimpleDateFormat("dd.MM.yyyy").format(new Date()));
             
-            //TODO Удалить после добавления триггера
-            if (exRate.isEmpty()){
-                newRate.setId(0);
-            }
-            else{
-                int max=0;
-                for (int i=0; i<exRate.size();i++){
-                    if (exRate.get(i).getId()>max){
-                        max=exRate.get(i).getId();
-                    }
-                }
-                newRate.setId(max+1);
-            }
+//            TODO Удалить после добавления триггера
+//            if (exRate.isEmpty()){
+//                newRate.setId(0);
+//            }
+//            else{
+//                int max=0;
+//                for (int i=0; i<exRate.size();i++){
+//                    if (exRate.get(i).getId()>max){
+//                        max=exRate.get(i).getId();
+//                    }
+//                }
+//                newRate.setId(max+1);
+//            }
 
-            if(client.addExRate(newRate)==1){
-                jLabelCurrError.setText("Добавление OK");
-                exRateRefresh();
-            }
-            else{
-                jLabelCurrError.setText("Добавление Error");
-            }
-
+            client.addExRate(newRate);
+            jLabelCurrError.setText("Добавление OK");
+            exRateRefresh();
+        }
+        catch(SQLException e){
+            jLabelCurrError.setText("Добавление SQL ошибка");
+            System.out.println("ExRate_add: "+e);
         }
         catch(Exception e){
             System.out.println("ExRateAdd_1: "+e);
@@ -1046,27 +1079,35 @@ public class BookKeeperForm extends javax.swing.JFrame {
     private void jButtonBankRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBankRefreshActionPerformed
         try {
             bankRefresh();
-        } catch (RemoteException ex){}
+        }
+        catch (SQLException e){
+            System.out.println("Bank_refresh: "+e);
+            jLabelBankError.setText("SQL ошбика обновления");
+        }
+        catch (Exception e){
+            System.out.println("Bank_refresh: "+e);
+            jLabelBankError.setText("Ошбика обновления");
+        }
     }//GEN-LAST:event_jButtonBankRefreshActionPerformed
 
     private void jButtonBankDelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBankDelActionPerformed
         try{
             if (selected>=0){
-                if (client.delBank(bank.get(selected))==1){
-                    jLabelBankError.setText("Удаление ОК");
-                    bankRefresh();
-                }
-                else{
-                    jLabelBankError.setText("Удаление: ошибка.");
-                }
+                client.delBank(bank.get(selected));
+                jLabelBankError.setText("Удаление ОК");
+                bankRefresh();
             }
             else{
-                jLabelBankError.setText("Удаление ошибка");
+                jLabelBankError.setText("Удаление ошибка. Не выбрана запись.");
             }
+        }
+        catch(SQLException e){
+            jLabelBankError.setText("Удаление SQL ошибка");
+            System.out.println("Bank_del: "+e);
         }
         catch(Exception e){
             System.out.println("Error bank_del :"+e);
-            this.jLabelBankError.setText("Удаление: ошибка.");
+            this.jLabelBankError.setText("Удаление ошибка.");
         }
     }//GEN-LAST:event_jButtonBankDelActionPerformed
 
@@ -1078,13 +1119,13 @@ public class BookKeeperForm extends javax.swing.JFrame {
             newBank.setLocation(jTextBankCountry.getText());
             newBank.setLicense_num(new Integer(jTextBankLicense.getText()));
             newBank.setId(bank.get(selected).getId());
-            if (client.editBank(newBank)==1){
-                jLabelBankError.setText("Редактирование OK");
-                bankRefresh();
-            }
-            else{
-                jLabelBankError.setText("Редактирование Error");
-            }
+            client.editBank(newBank);
+            jLabelBankError.setText("Редактирование OK");
+            bankRefresh();
+        }
+        catch(SQLException e){
+            jLabelBankError.setText("Редактирование SQL ошибка");
+            System.out.println("BankEdit: "+e);
         }
         catch(Exception e){
             System.out.println("Error:="+e);
@@ -1106,27 +1147,27 @@ public class BookKeeperForm extends javax.swing.JFrame {
             newBank.setLocation(jTextBankCountry.getText());
             newBank.setLicense_num(new Integer(jTextBankLicense.getText()));
             
-            //TODO Удалить после добавления триггера
-            if (bank.isEmpty()){
-                newBank.setId(0);
-            }
-            else{
-                int max = 0;
-                for (int i=0; i<bank.size();i++){
-                    if (bank.get(i).getId()>max){
-                        max=bank.get(i).getId();
-                    }
-                }
-                newBank.setId(max+1);
-            }
+//            TODO Удалить после добавления триггера
+//            if (bank.isEmpty()){
+//                newBank.setId(0);
+//            }
+//            else{
+//                int max = 0;
+//                for (int i=0; i<bank.size();i++){
+//                    if (bank.get(i).getId()>max){
+//                        max=bank.get(i).getId();
+//                    }
+//                }
+//                newBank.setId(max+1);
+//            }
             
-            if (client.addBank(newBank) == 1){
-                jLabelBankError.setText("Добавление успешно");
-                bankRefresh();
-            }
-            else{
-                jLabelBankError.setText("Добавление ошибка");
-            }
+            client.addBank(newBank);
+            jLabelBankError.setText("Добавление успешно");
+            bankRefresh();
+        }
+        catch(SQLException e){
+            jLabelBankError.setText("Добавление SQL ошибка");
+            System.out.println("BankAdd: "+e);
         }
         catch(Exception e){
             System.out.println("Bank_add: "+e);
@@ -1176,36 +1217,36 @@ public class BookKeeperForm extends javax.swing.JFrame {
             newFirm.setLicense(new Integer(jTextFirmLicense.getText()));
             newFirm.setType(jTextFirmType.getText());
             
-            //TODO Удалить после добавления триггера.
-            if (firm.isEmpty()){
-                newFirm.setId(0);
-            }
-            else{
-                int max = 0;
-                for (int i=0; i<firm.size();i++){
-                    if (firm.get(i).getId()>max){
-                        max=firm.get(i).getId();
-                    }
-                }
-                newFirm.setId(max+1);
-            }
+//            TODO Удалить после добавления триггера.
+//            if (firm.isEmpty()){
+//                newFirm.setId(0);
+//            }
+//            else{
+//                int max = 0;
+//                for (int i=0; i<firm.size();i++){
+//                    if (firm.get(i).getId()>max){
+//                        max=firm.get(i).getId();
+//                    }
+//                }
+//                newFirm.setId(max+1);
+//            }
             
-            if (client.addFirm(newFirm) == 1){
-                jLabelFirmError.setText("Добавление успешно");
-                firmRefresh();
-            }
-            else{
-                jLabelFirmError.setText("Добавление ошибка");
-            }
+            client.addFirm(newFirm);
+            jLabelFirmError.setText("Добавление успешно");
+            firmRefresh();
+        }
+        catch(SQLException e){
+            jLabelFirmError.setText("Добавление SQL ошибка");
+            System.out.println("FirmAdd: "+e);
         }
         catch(Exception e){
             System.out.println("FirmAdd: "+e);
-            jLabelFirmError.setText("Добавление ошибка. ПРоверьте данные.");
+            jLabelFirmError.setText("Добавление ошибка. Проверьте данные.");
         }
     }//GEN-LAST:event_jButtonFirmAddActionPerformed
 
     private void jButtonFirmEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFirmEditActionPerformed
-                Firm newFirm = new Firm();
+        Firm newFirm = new Firm();
         try{
             newFirm.setName(jTextFirmName.getText());
             newFirm.setCountry(jTextFirmCountry.getText());
@@ -1214,13 +1255,13 @@ public class BookKeeperForm extends javax.swing.JFrame {
             newFirm.setType(jTextFirmType.getText());
             newFirm.setId(firm.get(selected).getId());
             
-            if (client.editFirm(newFirm) == 1){
-                jLabelFirmError.setText("Редактирование успешно");
-                firmRefresh();
-            }
-            else{
-                jLabelFirmError.setText("Редактирование ошибка");
-            }
+            client.editFirm(newFirm);
+            jLabelFirmError.setText("Редактирование успешно");
+            firmRefresh();
+        }
+        catch(SQLException e){
+            System.out.println("EditFirm: "+e);
+            jLabelFirmError.setText("Редактирование SQL ошибка");
         }
         catch(Exception e){
             System.out.println("FirmAdd: "+e);
@@ -1231,17 +1272,17 @@ public class BookKeeperForm extends javax.swing.JFrame {
     private void jButtonFirmDelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFirmDelActionPerformed
         try{
             if (selected>=0){
-                if (client.delFirm(firm.get(selected))==1){
-                    jLabelFirmError.setText("Удаление ОК");
-                    firmRefresh();
-                }
-                else{
-                    jLabelFirmError.setText("Удаление: ошибка.");
-                }
+                client.delFirm(firm.get(selected));
+                jLabelFirmError.setText("Удаление ОК");
+                firmRefresh();
             }
             else{
-                jLabelFirmError.setText("Удаление ошибка");
+                jLabelFirmError.setText("Удаление ошибка. Не выбрана запись.");
             }
+        }
+        catch(SQLException e){
+            jLabelFirmError.setText("Удаление SQL ошибка.");
+            System.out.println("FirmDel: "+e);
         }
         catch(Exception e){
             System.out.println("FirmDel: "+e);
@@ -1318,27 +1359,27 @@ public class BookKeeperForm extends javax.swing.JFrame {
             newAcc.setCurrency_id(currency.get(jComboBoxAccCurrency.getSelectedIndex()).getId());
             newAcc.setFirm_id(firm.get(jComboBoxAccFirm.getSelectedIndex()).getId());
             
-            //TODO Удалить после добавления триггера
-            if (acc.isEmpty()){
-                newAcc.setId(0);
-            }
-            else{
-                int max=0;
-                for (int i=0; i<acc.size();i++){
-                    if (acc.get(i).getId()>max){
-                        max=acc.get(i).getId();
-                    }
-                }
-                newAcc.setId(max+1);
-            }
+//            TODO Удалить после добавления триггера
+//            if (acc.isEmpty()){
+//                newAcc.setId(0);
+//            }
+//            else{
+//                int max=0;
+//                for (int i=0; i<acc.size();i++){
+//                    if (acc.get(i).getId()>max){
+//                        max=acc.get(i).getId();
+//                    }
+//                }
+//                newAcc.setId(max+1);
+//            }
             
-            if(client.addAccount(newAcc)==1){
+            client.addAccount(newAcc);
                 jLabelAccError.setText("Добавление OK");
                 accRefresh();
-            }
-            else{
-                jLabelAccError.setText("Добавление Error");
-            }
+        }
+        catch(SQLException e){
+            jLabelAccError.setText("Добавление SQL ошибка");
+            System.out.println("AccAdd: "+e);
         }
         catch(Exception e){
             System.out.println("AccAdd: "+e);
@@ -1355,13 +1396,13 @@ public class BookKeeperForm extends javax.swing.JFrame {
             newAcc.setFirm_id(firm.get(jComboBoxAccFirm.getSelectedIndex()).getId());
             newAcc.setId(acc.get(selected).getBank_id());
             
-            if(client.editAccount(newAcc)==1){
-                jLabelAccError.setText("Редактирование OK");
-                accRefresh();
-            }
-            else{
-                jLabelAccError.setText("Редактирование Error");
-            }
+            client.editAccount(newAcc);
+            jLabelAccError.setText("Редактирование OK");
+            accRefresh();
+        }
+        catch(SQLException e){
+            jLabelAccError.setText("Редактирование SQL ошибка");
+            System.out.println("EditAcc: "+e);
         }
         catch(Exception e){
             System.out.println("AccEDIT: "+e);
@@ -1373,33 +1414,44 @@ public class BookKeeperForm extends javax.swing.JFrame {
         try{
             accRefresh();
         }
+        catch(SQLException e){
+            jLabelAccError.setText("Обновление SQL ошибка");
+            System.out.println("RefreshAcc: "+e);
+        }
         catch(Exception e){
             System.out.println("AccRefresh: "+e);
+            jLabelAccError.setText("Обновление ошибка");
         }
     }//GEN-LAST:event_jButtonAccRefreshActionPerformed
 
     private void jButtonFirmRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFirmRefreshActionPerformed
         try {
             firmRefresh();
-        } catch (Exception ex) {
+        }
+        catch(SQLException e){
+            jLabelFirmError.setText("Обновление SQL ошибка");
+            System.out.println("REfreshFirm: "+e);
+        }
+        catch(Exception ex){
             System.out.println("FirmRefresh: "+ex);
+            jLabelFirmError.setText("Обновление ошибка");
         }
     }//GEN-LAST:event_jButtonFirmRefreshActionPerformed
 
     private void jButtonAccDelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAccDelActionPerformed
         try{
             if (selected>=0){
-                if (client.delAccount(acc.get(selected))==1){
-                    jLabelAccError.setText("Удаление ОК");
-                    accRefresh();
-                }
-                else{
-                    jLabelAccError.setText("Удаление: ошибка.");
-                }
+                client.delAccount(acc.get(selected));
+                jLabelAccError.setText("Удаление ОК");
+                accRefresh();
             }
             else{
-                jLabelAccError.setText("Удаление ошибка");
+                jLabelAccError.setText("Удаление ошибка. Не выбрана запись");
             }            
+        }
+        catch(SQLException e){
+            jLabelAccError.setText("Удаление SQL ошибка.");
+            System.out.println("AccDel: "+e);
         }
         catch(Exception e){
             System.out.println("AccDel: "+e);

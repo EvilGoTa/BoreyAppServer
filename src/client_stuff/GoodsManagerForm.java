@@ -5,6 +5,7 @@ import Client.Client;
 import entities.Goods;
 import entities.Replaces;
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -19,7 +20,7 @@ public class GoodsManagerForm extends javax.swing.JFrame {
     public GoodsManagerForm(Client client) throws RemoteException {
         initComponents();
         this.client=client;
-        refresh();;
+        refreshGoods();
         jLabelMessage.setText("");
         jTableGoods.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 
@@ -51,19 +52,25 @@ public class GoodsManagerForm extends javax.swing.JFrame {
         }
     }
     
-    public void refresh() throws RemoteException{
+    public void refreshGoods() throws RemoteException{
         selected = -1;
-        goods = client.refreshGoods();
-        jTableGoods.setModel(new GoodsTableModel(goods));
-        jTableGoods.getColumnModel().getColumn(0).setPreferredWidth(30);
-        jTableGoods.getColumnModel().getColumn(1).setPreferredWidth(100);
-        jTableGoods.getColumnModel().getColumn(2).setPreferredWidth(50);
-        jTableGoods.getColumnModel().getColumn(3).setPreferredWidth(50);
-        jTableGoods.getColumnModel().getColumn(4).setPreferredWidth(100);
-        jTableGoods.getColumnModel().getColumn(5).setPreferredWidth(50);
-        jTableGoods.getColumnModel().getColumn(6).setPreferredWidth(50);
-        repl = client.replacesRefresh();
-        jTableReplaces.setModel(new ReplacesTableModel(repl));
+        try{
+            goods = client.refreshGoods();
+            jTableGoods.setModel(new GoodsTableModel(goods));
+            jTableGoods.getColumnModel().getColumn(0).setPreferredWidth(30);
+            jTableGoods.getColumnModel().getColumn(1).setPreferredWidth(100);
+            jTableGoods.getColumnModel().getColumn(2).setPreferredWidth(50);
+            jTableGoods.getColumnModel().getColumn(3).setPreferredWidth(50);
+            jTableGoods.getColumnModel().getColumn(4).setPreferredWidth(100);
+            jTableGoods.getColumnModel().getColumn(5).setPreferredWidth(50);
+            jTableGoods.getColumnModel().getColumn(6).setPreferredWidth(50);
+            repl = client.replacesRefresh();
+            jTableReplaces.setModel(new ReplacesTableModel(repl));
+        }
+        catch(SQLException e){
+            System.out.println("GK_refresh: "+e);
+            this.jLabelMessage.setText("SQL Error");
+        }
     }
 
     public void addReplace(Replaces repl){
@@ -272,14 +279,15 @@ public class GoodsManagerForm extends javax.swing.JFrame {
 
     private void jButtonGoodsRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGoodsRefreshActionPerformed
         try {
-            refresh();
+            refreshGoods();
         } catch (RemoteException ex) {}
     }//GEN-LAST:event_jButtonGoodsRefreshActionPerformed
 
     private void jButtonGoodsAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGoodsAddActionPerformed
         Goods newGood = new Goods();
-        try{
+        
             newGood.setName(jTextName.getText());
+            
             newGood.setClass_num(Integer.parseInt(jTextClass.getText()));
             newGood.setFirm_name(jTextFirm.getText());
             newGood.setTara(jTextTara.getText());
@@ -295,18 +303,18 @@ public class GoodsManagerForm extends javax.swing.JFrame {
 //            }
 //            newGood.setId(max+1);
             
-            
-            if(client.addGoods(newGood)==1){
+            try{
+                client.addGoods(newGood);
                 jLabelMessage.setText("Добавление OK");
-                refresh();
+                refreshGoods();
             }
-            else{
-                jLabelMessage.setText("Добавление Error");
+            catch(SQLException e){
+                jLabelMessage.setText("Добавление SQL Error");
             }
-        }
-        catch(Exception e){
-            this.jLabelMessage.setText("Добавление: ошибка. ПРоверьте исходные даные.");
-        }
+            catch(Exception e){
+                jLabelMessage.setText("Ошибка добавления");
+                System.out.println("GK_addGoods: "+e);
+            }
     }//GEN-LAST:event_jButtonGoodsAddActionPerformed
 
     private void jButtonGoodsEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGoodsEditActionPerformed
@@ -319,35 +327,35 @@ public class GoodsManagerForm extends javax.swing.JFrame {
             newGood.setPrice(Integer.parseInt(jTextPrise.getText()));
             newGood.setCount(Integer.parseInt(jTextQuantity.getText()));
             newGood.setId(goods.get(selected).getId());
-            if (client.editGoods(newGood)==1){
-                jLabelMessage.setText("Редактирование OK");
-                refresh();
-            }
-            else{
-                jLabelMessage.setText("Редактирование Error");
-            }
+            client.editGoods(newGood);
+            jLabelMessage.setText("Редактирование OK");
+            refreshGoods();
+        }
+        catch(SQLException e){
+            jLabelMessage.setText("Редактирование SQL ошибка");
+            System.out.println("GK_editGoods: "+e);
         }
         catch(Exception e){
             System.out.println("Error:="+e);
-            this.jLabelMessage.setText("Редактирование: ошибка. ПРоверьте исходные даные.");
+            this.jLabelMessage.setText("Редактирование: ошибка. Проверьте исходные даные.");
         }
     }//GEN-LAST:event_jButtonGoodsEditActionPerformed
 
     private void jButtonGoodsDelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGoodsDelActionPerformed
         try{
             if (selected>=0){
-                if (client.delGoods(goods.get(selected))==1){
+                client.delGoods(goods.get(selected));
                     jLabelMessage.setText("Удаление OK");
-                    refresh();
-                }
-                else{
-                    jLabelMessage.setText("Удаление Error");
-                }
+                    refreshGoods();
             }
+        }
+        catch(SQLException e){
+            jLabelMessage.setText("Удаление SQL ошибка");
+            System.out.println("GK_delGoods: "+e);
         }
         catch(Exception e){
             System.out.println("Error:="+e);
-            this.jLabelMessage.setText("Удаление: ошибка.");            
+            jLabelMessage.setText("Удаление: ошибка.");            
         }
     }//GEN-LAST:event_jButtonGoodsDelActionPerformed
 
