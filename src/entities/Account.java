@@ -111,5 +111,7 @@ public class Account implements Serializable{
         return bankName;
     }
     
-    
+    public String getAccName(){
+        return firmName+" "+bankName+" "+currencyName;
+    }
 }

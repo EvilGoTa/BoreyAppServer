@@ -77,12 +77,12 @@
   <SubComponents>
     <Component class="javax.swing.JTextField" name="jTextLogin">
       <Properties>
-        <Property name="text" type="java.lang.String" value="GoodsKeeper"/>
+        <Property name="text" type="java.lang.String" value="BookKeeper"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JPasswordField" name="jPassword">
       <Properties>
-        <Property name="text" type="java.lang.String" value="gk12345"/>
+        <Property name="text" type="java.lang.String" value="bk12345"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">

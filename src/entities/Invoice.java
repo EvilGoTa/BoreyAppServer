@@ -61,5 +61,8 @@ public class Invoice implements Serializable{
         return firmName;
     }
     
+    public String getInvoiceName(){
+        return firmName+" "+date;
+    }
     
 }

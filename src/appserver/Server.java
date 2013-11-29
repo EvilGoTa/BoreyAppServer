@@ -7,6 +7,8 @@ import DBAccess.CurrencyDBAccess;
 import DBAccess.ExRateDBAccess;
 import DBAccess.FirmDBAccess;
 import DBAccess.GoodsDBAccess;
+import DBAccess.InvoiceDBAccess;
+import DBAccess.PODBAccess;
 import DBAccess.ReplacesDBAccess;
 import DBAccess.UsersDBAccess;
 import entities.Account;
@@ -15,6 +17,8 @@ import entities.Currency;
 import entities.ExchangeRate;
 import entities.Firm;
 import entities.Goods;
+import entities.Invoice;
+import entities.PaymentOrder;
 import entities.Replaces;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -164,5 +168,25 @@ public class Server extends UnicastRemoteObject implements ServerIntf{
     public ArrayList<Replaces> getReplacesOf(Goods good) throws RemoteException, SQLException {
         ReplacesDBAccess nya = new ReplacesDBAccess();
         return nya.getReplacesOf(good);
+    }
+
+    public ArrayList<PaymentOrder> peyOrdRefresh() throws RemoteException, SQLException {
+        PODBAccess nya = new PODBAccess();
+        return nya.getPO();
+    }
+
+    public void addPayOrd(PaymentOrder payOrd) throws RemoteException, SQLException {
+        PODBAccess nya = new PODBAccess();
+        nya.addPO(payOrd);
+    }
+
+    public void delPayOrd(PaymentOrder payOrd) throws RemoteException, SQLException {
+        PODBAccess nya = new PODBAccess();
+        nya.delPO(payOrd);
+    }
+
+    public ArrayList<Invoice> getInvWOPO() throws RemoteException, SQLException {
+        InvoiceDBAccess nya = new InvoiceDBAccess();
+        return nya.getInvoicesWitNoPO();
     }
 }

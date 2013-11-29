@@ -6,11 +6,15 @@ import entities.Bank;
 import entities.Currency;
 import entities.ExchangeRate;
 import entities.Firm;
+import entities.Invoice;
+import entities.PaymentOrder;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import models.AccountTableModel;
@@ -18,6 +22,7 @@ import models.BankTableModel;
 import models.CurrencyTableModel;
 import models.ExRateTableModel;
 import models.FirmTableModel;
+import models.PaymentOrderTableModel;
 
 public class BookKeeperForm extends javax.swing.JFrame {
     private Client client = null;
@@ -28,6 +33,8 @@ public class BookKeeperForm extends javax.swing.JFrame {
     private ArrayList<Bank> bank = null;
     private ArrayList<Firm> firm = null;
     private ArrayList<Account> acc = null;
+    private ArrayList<PaymentOrder> payOrd = null;
+    private ArrayList<Invoice> inv = null;
     
     public BookKeeperForm() {
         initComponents();
@@ -96,6 +103,24 @@ public class BookKeeperForm extends javax.swing.JFrame {
         for (int i=0; i<bank.size();i++){
             jComboBoxAccBank.addItem(bank.get(i).getName());
         }
+    }
+    
+    public void refreshPO() throws RemoteException, SQLException{
+        payOrd = client.getPayOrd();
+        inv = client.getInvWOPO();
+        acc = client.accRefresh();
+        jComboBoxPOAcc.removeAllItems();
+        jComboBoxPOInv.removeAllItems();
+                
+        for (int i = 0; i < acc.size(); i++ ){
+            jComboBoxPOAcc.addItem(acc.get(i).getAccName());
+        }
+    
+        for (int i = 0; i < inv.size(); i++){
+            jComboBoxPOInv.addItem(inv.get(i).getInvoiceName());
+        }
+        
+        jTable1.setModel(new PaymentOrderTableModel(payOrd));
     }
     
     @SuppressWarnings("unchecked")
@@ -181,6 +206,7 @@ public class BookKeeperForm extends javax.swing.JFrame {
         jButtonPOAdd = new javax.swing.JButton();
         jButtonPODel = new javax.swing.JButton();
         jButtonPORefresh = new javax.swing.JButton();
+        jLabelPOError = new javax.swing.JLabel();
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -725,16 +751,39 @@ public class BookKeeperForm extends javax.swing.JFrame {
 
         jTabbedPane3.addTab("Валюты", jPanelCurrency);
 
+        jPanelPO.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                jPanelPOComponentShown(evt);
+            }
+        });
+
         jLabel19.setText("Счет");
 
         jLabel20.setText("Накладная");
 
         jButtonPOAdd.setText("Оплачено");
+        jButtonPOAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonPOAddActionPerformed(evt);
+            }
+        });
 
         jButtonPODel.setText("Удалить");
         jButtonPODel.setToolTipText("");
+        jButtonPODel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonPODelActionPerformed(evt);
+            }
+        });
 
         jButtonPORefresh.setText("Обновить");
+        jButtonPORefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonPORefreshActionPerformed(evt);
+            }
+        });
+
+        jLabelPOError.setText("jLabel21");
 
         javax.swing.GroupLayout jPanelPOLayout = new javax.swing.GroupLayout(jPanelPO);
         jPanelPO.setLayout(jPanelPOLayout);
@@ -754,7 +803,8 @@ public class BookKeeperForm extends javax.swing.JFrame {
                     .addGroup(jPanelPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(jButtonPODel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButtonPOAdd, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE))
-                    .addComponent(jButtonPORefresh, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButtonPORefresh, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabelPOError, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(192, Short.MAX_VALUE))
         );
         jPanelPOLayout.setVerticalGroup(
@@ -768,13 +818,15 @@ public class BookKeeperForm extends javax.swing.JFrame {
                 .addGroup(jPanelPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel20)
                     .addComponent(jComboBoxPOInv, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(26, 26, 26)
+                .addGap(18, 18, 18)
+                .addComponent(jLabelPOError)
+                .addGap(28, 28, 28)
                 .addComponent(jButtonPORefresh)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonPOAdd)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonPODel)
-                .addContainerGap(218, Short.MAX_VALUE))
+                .addContainerGap(184, Short.MAX_VALUE))
         );
 
         jTabbedPane3.addTab("Вх.Платежные поручения", jPanelPO);
@@ -1459,6 +1511,76 @@ public class BookKeeperForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButtonAccDelActionPerformed
 
+    private void jPanelPOComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jPanelPOComponentShown
+        selectListen = null;
+        selected = -1;
+        jComboBoxPOAcc.removeAllItems();
+        jComboBoxPOInv.removeAllItems();
+        jLabelPOError.setText("");
+        try{
+            refreshPO();
+            jTable1.getSelectionModel().addListSelectionListener(selectListen = new ListSelectionListener() {
+
+                @Override
+                public void valueChanged(ListSelectionEvent e) {
+                    selected = jTable1.getSelectedRow();
+                }
+            });
+        }
+        catch(SQLException e){
+            System.out.println("POrefresh: "+e);
+            jLabelPOError.setText("SQL ошибка обновления.");
+        }
+        catch(Exception e){
+            System.out.println("PORefresh: "+e);
+            jLabelPOError.setText("Ошибка обновления.");
+        }
+    }//GEN-LAST:event_jPanelPOComponentShown
+
+    private void jButtonPORefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPORefreshActionPerformed
+        try {
+            refreshPO();
+        } catch (RemoteException ex) {
+        } catch (SQLException ex) {
+        }
+    }//GEN-LAST:event_jButtonPORefreshActionPerformed
+
+    private void jButtonPODelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPODelActionPerformed
+        if (selected>=0){
+            try {
+                client.delPayOrd(payOrd.get(selected));
+                jLabelPOError.setText("Удаление ОК");
+            } catch (RemoteException ex) {
+                Logger.getLogger(BookKeeperForm.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(BookKeeperForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        else{
+            jLabelPOError.setText("ОШибка удаления. Не выбрана запись.");
+        }
+    }//GEN-LAST:event_jButtonPODelActionPerformed
+
+    private void jButtonPOAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPOAddActionPerformed
+        PaymentOrder newPO = new PaymentOrder();
+        try{
+            newPO.setAccount_id(acc.get(jComboBoxPOAcc.getSelectedIndex()).getId());
+            newPO.setInvoice_id(inv.get(jComboBoxPOInv.getSelectedIndex()).getId());
+            String time = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
+            newPO.setDate(time);
+            
+            client.addPO(newPO);
+            jLabelPOError.setText("Добавление успешно");
+            
+        }
+        catch(SQLException e){
+            jLabelPOError.setText("SQL ошибка добавления");
+        }
+        catch(Exception e){
+            jLabelPOError.setText("Ошибка добавления");
+        }
+    }//GEN-LAST:event_jButtonPOAddActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAccAdd;
     private javax.swing.JButton jButtonAccDel;
@@ -1513,6 +1635,7 @@ public class BookKeeperForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelCurrError;
     private javax.swing.JLabel jLabelExRateError;
     private javax.swing.JLabel jLabelFirmError;
+    private javax.swing.JLabel jLabelPOError;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanelAccount;
     private javax.swing.JPanel jPanelBank;

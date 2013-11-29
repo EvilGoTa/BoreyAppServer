@@ -7,6 +7,8 @@ import entities.Currency;
 import entities.ExchangeRate;
 import entities.Firm;
 import entities.Goods;
+import entities.Invoice;
+import entities.PaymentOrder;
 import entities.Replaces;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -49,4 +51,9 @@ public interface ServerIntf extends Remote{
     public void addReplaces(Replaces repl) throws RemoteException, SQLException;
     public void delReplaces(Replaces repl) throws RemoteException, SQLException;
     public ArrayList<Replaces> getReplacesOf(Goods good) throws RemoteException, SQLException;
+
+    public ArrayList<PaymentOrder> peyOrdRefresh() throws RemoteException, SQLException;
+    public void addPayOrd(PaymentOrder payOrd) throws RemoteException, SQLException;
+    public void delPayOrd(PaymentOrder payOrd) throws RemoteException, SQLException;
+    public ArrayList<Invoice> getInvWOPO() throws RemoteException, SQLException;
 }

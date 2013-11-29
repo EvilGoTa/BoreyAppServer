@@ -10,6 +10,8 @@ import entities.Currency;
 import entities.ExchangeRate;
 import entities.Firm;
 import entities.Goods;
+import entities.Invoice;
+import entities.PaymentOrder;
 import entities.Replaces;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
@@ -173,5 +175,21 @@ public class Client extends UnicastRemoteObject{
     
     public ArrayList<Replaces> getReplaceOf(Goods good) throws RemoteException, SQLException{
         return server.getReplacesOf(good);
+    }
+
+    public ArrayList<Invoice> getInvWOPO() throws RemoteException, SQLException{
+        return server.getInvWOPO();
+    }
+    
+    public ArrayList<PaymentOrder> getPayOrd() throws RemoteException, SQLException{
+        return server.peyOrdRefresh();
+    }
+    
+    public void delPayOrd(PaymentOrder payOrd) throws RemoteException, SQLException{
+        server.delPayOrd(payOrd);
+    }
+    
+    public void addPO(PaymentOrder payOrd) throws RemoteException, SQLException{
+        server.addPayOrd(payOrd);
     }
 }

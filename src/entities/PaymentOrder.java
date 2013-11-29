@@ -24,6 +24,8 @@ public class PaymentOrder implements Serializable{
         this.total_amount = total_amount;
         this.invoice_id = invoice_id;
     }
+    
+    public PaymentOrder(){}
 
     public void setDepartment_id(Integer department_id) {
         this.department_id = department_id;
